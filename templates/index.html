@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCIENCE CALC | Calculadora Científica Avanzada</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.7.0/math.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="icon" href="https://cdn3d.iconscout.com/3d/premium/thumb/calculadora-4168193-3457124.png?f=webp" type="image/x-icon">
+
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+
+        <!-- Header -->
+        <header class="text-center mb-8 md:mb-12 fade-in">
+            <div class="flex justify-center items-center mb-4">
+                <div class="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] shadow-lg">
+                    <i class="fas fa-calculator text-2xl md:text-3xl text-white"></i>
+                </div>
+                <div class="w-10"></div>
+            </div>
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-2 gradient-text">SCIENCE CALC</h1>
+            <p class="text-base md:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                Calculadora científica avanzada para operaciones matemáticas complejas. Herramienta esencial para estudiantes y profesionales.
+            </p>
+            <div class="mt-4 flex flex-wrap justify-center gap-2">
+                <span class="status-pill bg-blue-100 text-blue-800">
+                    <i class="fas fa-calculator mr-1"></i> Científica
+                </span>
+                <span class="status-pill bg-green-100 text-green-800">
+                    <i class="fas fa-chart-line mr-1"></i> Gráficas
+                </span>
+                <span class="status-pill bg-purple-100 text-purple-800">
+                    <i class="fas fa-brain mr-1"></i> Avanzada
+                </span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="bg-white rounded-2xl elevated-card p-6 mb-6 glass-effect">
+            
+            <!-- Navigation Tabs -->
+            <div class="flex justify-center mb-6 md:mb-8">
+                <div class="inline-flex rounded-lg bg-gray-100 p-1 max-w-full overflow-x-auto">
+                    <div class="flex space-x-1">
+                        <!-- Home Tab -->
+                        <button 
+                        onclick="showSection('home')" 
+                        class="tab-button flex flex-col items-center px-3 py-1 md:px-4 md:py-2 rounded-md transition-all group active min-w-[60px]"
+                        id="homeTab"
+                        >
+                        <div class="w-6 h-6 md:w-8 md:h-8 rounded-md bg-indigo-100 flex items-center justify-center group-[.active]:bg-indigo-200">
+                            <i class="fas fa-home text-indigo-600 text-xs md:text-sm"></i>
+                        </div>
+                        <span class="mt-1 text-[10px] md:text-xs font-medium">Inicio</span>
+                        </button>
+                
+                        <!-- Matrices Tab -->
+                        <button 
+                        onclick="showSection('matrices')" 
+                        class="tab-button flex flex-col items-center px-3 py-1 md:px-4 md:py-2 rounded-md transition-all group min-w-[60px]"
+                        id="matricesTab"
+                        >
+                        <div class="w-6 h-6 md:w-8 md:h-8 rounded-md bg-blue-100 flex items-center justify-center group-[.active]:bg-blue-200">
+                            <i class="fas fa-table text-blue-600 text-xs md:text-sm"></i>
+                        </div>
+                        <span class="mt-1 text-[10px] md:text-xs font-medium">Matrices</span>
+                        </button>
+                
+                        <!-- Polynomials Tab -->
+                        <button 
+                        onclick="showSection('polynomials')" 
+                        class="tab-button flex flex-col items-center px-3 py-1 md:px-4 md:py-2 rounded-md transition-all group min-w-[60px]"
+                        id="polynomialsTab"
+                        >
+                        <div class="w-6 h-6 md:w-8 md:h-8 rounded-md bg-purple-100 flex items-center justify-center group-[.active]:bg-purple-200">
+                            <i class="fas fa-drafting-compass text-purple-600 text-xs md:text-sm"></i>
+                        </div>
+                        <span class="mt-1 text-[10px] md:text-xs font-medium">Polinomios</span>
+                        </button>
+                
+                        <!-- Vectors Tab -->
+                        <button 
+                        onclick="showSection('vectors')" 
+                        class="tab-button flex flex-col items-center px-3 py-1 md:px-4 md:py-2 rounded-md transition-all group min-w-[60px]"
+                        id="vectorsTab"
+                        >
+                        <div class="w-6 h-6 md:w-8 md:h-8 rounded-md bg-green-100 flex items-center justify-center group-[.active]:bg-green-200">
+                            <i class="fas fa-vector-square text-green-600 text-xs md:text-sm"></i>
+                        </div>
+                        <span class="mt-1 text-[10px] md:text-xs font-medium">Vectores</span>
+                        </button>
+                
+                        <!-- Graphs Tab -->
+                        <button 
+                        onclick="showSection('graphs')" 
+                        class="tab-button flex flex-col items-center px-3 py-1 md:px-4 md:py-2 rounded-md transition-all group min-w-[60px]"
+                        id="graphsTab"
+                        >
+                        <div class="w-6 h-6 md:w-8 md:h-8 rounded-md bg-red-100 flex items-center justify-center group-[.active]:bg-red-200">
+                            <i class="fas fa-chart-line text-red-600 text-xs md:text-sm"></i>
+                        </div>
+                        <span class="mt-1 text-[10px] md:text-xs font-medium">Gráficas</span>
+                        </button>
+                
+                        <!-- Calculus Tab -->
+                        <button 
+                        onclick="showSection('calculus')" 
+                        class="tab-button flex flex-col items-center px-3 py-1 md:px-4 md:py-2 rounded-md transition-all group min-w-[60px]"
+                        id="calculusTab"
+                        >
+                        <div class="w-6 h-6 md:w-8 md:h-8 rounded-md bg-yellow-100 flex items-center justify-center group-[.active]:bg-yellow-200">
+                            <i class="fas fa-square-root-alt text-yellow-600 text-xs md:text-sm"></i>
+                        </div>
+                        <span class="mt-1 text-[10px] md:text-xs font-medium">Cálculo</span>
+                        </button>
+                
+                        <!-- About Tab -->
+                        <button 
+                        onclick="showSection('about')" 
+                        class="tab-button flex flex-col items-center px-3 py-1 md:px-4 md:py-2 rounded-md transition-all group min-w-[60px]"
+                        id="aboutTab"
+                        >
+                        <div class="w-6 h-6 md:w-8 md:h-8 rounded-md bg-gray-200 flex items-center justify-center group-[.active]:bg-gray-300">
+                            <i class="fas fa-info-circle text-gray-700 text-xs md:text-sm"></i>
+                        </div>
+                        <span class="mt-1 text-[10px] md:text-xs font-medium">Acerca de</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Sections -->
+            <div id="content">
+
+                <!-- Home Section -->
+                <div id="home-section" class="py-12">
+                    <div class="mb-10">
+                        <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 mb-4">
+                            <span class="animate-pulse mr-2">•</span>Funcionalidades principales
+                        </div>
+                        <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4 leading-tight">
+                            Descubre todo el <span class="gradient-text">potencial</span> matemático
+                        </h2>
+                        <p class="text-lg text-gray-600 mb-8 max-w-3xl">
+                            Diseñada para simplificar cálculos complejos con una interfaz intuitiva y potentes funcionalidades.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <!-- Tarjeta 1: Operaciones Básicas -->
+                        <div class="feature-card bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+                            <div class="h-2 bg-gradient-to-r from-blue-500 to-blue-600"></div>
+                            <div class="p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center mr-4">
+                                        <i class="fas fa-lightbulb text-blue-600 text-xl"></i>
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-gray-900">Operaciones Básicas</h3>
+                                </div>
+                                
+                                <div class="ml-16">
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start">
+                                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center mt-0.5 mr-3">
+                                                <i class="fas fa-check text-blue-600 text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">Matrices: suma, resta, multiplicación</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center mt-0.5 mr-3">
+                                                <i class="fas fa-check text-blue-600 text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">Polinomios: operaciones algebraicas</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center mt-0.5 mr-3">
+                                                <i class="fas fa-check text-blue-600 text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">Vectores: producto punto y cruz</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Tarjeta 2: Operaciones Avanzadas -->
+                        <div class="feature-card bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+                            <div class="h-2 bg-gradient-to-r from-green-500 to-green-600"></div>
+                            <div class="p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center mr-4">
+                                        <i class="fas fa-cogs text-green-600 text-xl"></i>
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-gray-900">Operaciones Avanzadas</h3>
+                                </div>
+                                
+                                <div class="ml-16">
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start">
+                                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mt-0.5 mr-3">
+                                                <i class="fas fa-check text-green-600 text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">Derivación e integración</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mt-0.5 mr-3">
+                                                <i class="fas fa-check text-green-600 text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">Gráficas 2D y 3D</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mt-0.5 mr-3">
+                                                <i class="fas fa-check text-green-600 text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">Cálculo de determinantes</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Tarjeta 3: Cómo usar  -->
+                        <div class="feature-card bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+                            <div class="h-2 bg-gradient-to-r from-indigo-600 to-purple-600"></div>
+                            <div class="p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center mr-4">
+                                        <i class="fas fa-bolt text-purple-600 text-xl"></i>
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-gray-900">¿Cómo usar esta calculadora?</h3>
+                                </div>
+                                
+                                <div class="ml-16">
+                                    <ol class="space-y-4">
+                                        <li class="flex items-center">
+                                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center mr-3 text-indigo-600 text-sm font-medium">
+                                                1
+                                            </div>
+                                            <span class="text-gray-700">Selecciona una categoría del menú superior</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center mr-3 text-indigo-600 text-sm font-medium">
+                                                2
+                                            </div>
+                                            <span class="text-gray-700">Ingresa los datos requeridos en los campos correspondientes</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center mr-3 text-indigo-600 text-sm font-medium">
+                                                3
+                                            </div>
+                                            <span class="text-gray-700">Haz clic en la operación que deseas realizar</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center mr-3 text-indigo-600 text-sm font-medium">
+                                                4
+                                            </div>
+                                            <span class="text-gray-700">Visualiza los resultados en la sección inferior</span>
+                                        </li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>  
+                </div>
+
+                <!-- Matrices Section -->
+                <div id="matrices-section" class="hidden fade-in py-8">
+                    <div class="mb-8">
+                        <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 mb-3">
+                            <span class="animate-pulse mr-2">•</span>Operaciones matriciales
+                        </div>
+                        <h2 class="text-3xl font-bold mb-3 text-gray-800">
+                            Calculadora de <span class="text-indigo-600">Matrices</span>
+                        </h2>
+                        <p class="text-gray-600">
+                            Ingresa tus matrices y selecciona la operación a realizar
+                        </p>
+                    </div>
+
+                    <!-- Top Row: Configuration + Matrices -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                        <!-- Configuration Panel -->
+                        <div class="bg-white rounded-lg shadow-md border border-gray-100 p-5">
+                            <h3 class="font-semibold text-lg mb-4 text-gray-800 flex items-center">
+                                <i class="fas fa-cog text-indigo-500 mr-2"></i> Configuración
+                            </h3>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Dimensiones</label>
+                                    <div class="flex items-center space-x-3">
+                                        <select id="matrix-rows" class="flex-1 input-field">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3" selected>3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                        </select>
+                                        <span class="text-gray-500">×</span>
+                                        <select id="matrix-cols" class="flex-1 input-field">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3" selected>3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <button onclick="updateMatrixSize()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md transition flex items-center justify-center">
+                                    <i class="fas fa-sync-alt mr-2"></i> Actualizar
+                                </button>
+                                
+                                <div class="pt-3 space-y-2">
+                                    <button onclick="randomizeMatrix('A')" class="w-full bg-blue-100 hover:bg-blue-200 text-blue-600 py-1.5 px-3 rounded-md text-sm flex items-center justify-center">
+                                        <i class="fas fa-random mr-2"></i> Aleatorizar A
+                                    </button>
+                                    <button onclick="randomizeMatrix('B')" class="w-full bg-green-100 hover:bg-green-200 text-green-600 py-1.5 px-3 rounded-md text-sm flex items-center justify-center">
+                                        <i class="fas fa-random mr-2"></i> Aleatorizar B
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Matrices Panel -->
+                        <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Matriz A -->
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="font-medium text-gray-800 flex items-center">
+                                        <div class="w-8 h-8 rounded-md bg-blue-100 flex items-center justify-center mr-2">
+                                            <i class="fas fa-table text-blue-500 text-sm"></i>
+                                        </div>
+                                        <span>Matriz A</span>
+                                    </h3>
+                                    <button onclick="clearMatrix('A')" class="clear-btn bg-blue-100 hover:bg-blue-200">
+                                        <i class="fas fa-eraser text-blue-500 text-sm"></i>
+                                    </button>
+                                </div>
+                                <div id="matrixA" class="matrix-grid grid gap-3 p-2 bg-gray-50/50 rounded-lg"></div>
+                            </div>
+                            
+                            <!-- Matriz B -->
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="font-medium text-gray-800 flex items-center">
+                                        <div class="w-8 h-8 rounded-md bg-green-100 flex items-center justify-center mr-2">
+                                            <i class="fas fa-table text-green-500 text-sm"></i>
+                                        </div>
+                                        <span>Matriz B</span>
+                                    </h3>
+                                    <button onclick="clearMatrix('B')" class="clear-btn bg-green-100 hover:bg-green-200">
+                                        <i class="fas fa-eraser text-green-500 text-sm"></i>
+                                    </button>
+                                </div>
+                                <div id="matrixB" class="matrix-grid grid gap-3 p-2 bg-gray-50/50 rounded-lg"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Operations Row -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                            <i class="fas fa-calculator mr-2"></i> Operaciones Disponibles
+                        </h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                            <button onclick="matrixOperation('add')" class="operation-btn px-3 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg">
+                                <i class="fas fa-plus mr-1"></i> Sumar
+                            </button>
+                            <button onclick="matrixOperation('subtract')" class="operation-btn px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg">
+                                <i class="fas fa-minus mr-1"></i> Restar
+                            </button>
+                            <button onclick="matrixOperation('multiply')" class="operation-btn px-3 py-2 bg-gradient-to-r from-purple-500 to-violet-500 text-white rounded-lg">
+                                <i class="fas fa-times mr-1"></i> Multiplicar
+                            </button>
+                            <button onclick="matrixOperation('determinant')" class="operation-btn px-3 py-2 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-lg">
+                                <i class="fas fa-search mr-1"></i> Determinante
+                            </button>
+                            <button onclick="matrixOperation('inverse')" class="operation-btn px-3 py-2 bg-gradient-to-r from-yellow-500 to-amber-500 text-white rounded-lg">
+                                <i class="fas fa-exchange-alt mr-1"></i> Inversa
+                            </button>
+                            <button onclick="matrixOperation('transpose')" class="operation-btn px-3 py-2 bg-gradient-to-r from-cyan-500 to-teal-500 text-white rounded-lg">
+                                <i class="fas fa-retweet mr-1"></i> Transpuesta
+                            </button>
+                            <button onclick="matrixOperation('rank')" class="operation-btn px-3 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg">
+                                <i class="fas fa-layer-group mr-1"></i> Rango
+                            </button>
+                            <button onclick="matrixOperation('trace')" class="operation-btn px-3 py-2 bg-gradient-to-r from-lime-500 to-green-500 text-white rounded-lg">
+                                <i class="fas fa-vector-square mr-1"></i> Traza
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Results Section -->
+                    <div class="bg-white rounded-lg shadow-md border border-gray-100 p-5">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-semibold text-lg text-gray-800 flex items-center">
+                                <i class="fas fa-square-root-alt text-indigo-500 mr-2"></i> Resultado
+                            </h3>
+                        </div>
+                        
+                        <div id="matrix-result" class="bg-gray-50 p-4 rounded-md border border-gray-200 min-h-32 max-h-96 overflow-auto">
+                            <div class="text-center py-8 text-gray-500">
+                                <i class="fas fa-calculator text-3xl mb-2"></i>
+                                <p>Los resultados aparecerán aquí</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Polynomials Section -->
+                <div id="polynomials-section" class="hidden fade-in py-8">
+                    <!-- Header Section -->
+                    <div class="mb-8">
+                        <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 mb-3">
+                            <span class="animate-pulse mr-2">•</span>Operaciones polinómicas
+                        </div>
+                        <h2 class="text-3xl font-bold mb-3 text-gray-800">
+                            Calculadora de <span class="text-indigo-600">Polinomios</span>
+                        </h2>
+                        <p class="text-gray-600">
+                            Ingresa tus polinomios y selecciona la operación a realizar
+                        </p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <!-- Polinomio 1 -->
+                        <div>
+                            <h3 class="font-bold mb-2 text-gray-800 flex items-center">
+                                <i class="fas fa-p mr-2 text-blue-500"></i> Polinomio 1
+                            </h3>
+                            <input type="text" id="poly1" class="input-field w-full" placeholder="Ej: 3*x**2 + 2*x + 1">
+                        </div>
+                        
+                        <!-- Polinomio 2 -->
+                        <div>
+                            <h3 class="font-bold mb-2 text-gray-800 flex items-center">
+                                <i class="fas fa-p mr-2 text-green-500"></i> Polinomio 2
+                            </h3>
+                            <input type="text" id="poly2" class="input-field w-full" placeholder="Ej: x**2 - 4">
+                        </div>
+                    </div>
+                    
+                    <!-- Operations -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                            <i class="fas fa-calculator mr-2"></i> Operaciones Disponibles
+                        </h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                            <button onclick="polynomialOperation('add')" class="operation-btn px-3 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg">
+                                <i class="fas fa-plus mr-1"></i> Sumar
+                            </button>
+                            <button onclick="polynomialOperation('subtract')" class="operation-btn px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg">
+                                <i class="fas fa-minus mr-1"></i> Restar
+                            </button>
+                            <button onclick="polynomialOperation('multiply')" class="operation-btn px-3 py-2 bg-gradient-to-r from-purple-500 to-violet-500 text-white rounded-lg">
+                                <i class="fas fa-times mr-1"></i> Multiplicar
+                            </button>
+                            <button onclick="polynomialOperation('derivative')" class="operation-btn px-3 py-2 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-lg">
+                                <i class="fas fa-arrow-down mr-1"></i> Derivada
+                            </button>
+                            <button onclick="polynomialOperation('integral')" class="operation-btn px-3 py-2 bg-gradient-to-r from-yellow-500 to-amber-500 text-white rounded-lg">
+                                <i class="fas fa-arrow-up mr-1"></i> Integral
+                            </button>
+                            <button onclick="polynomialOperation('roots')" class="operation-btn px-3 py-2 bg-gradient-to-r from-cyan-500 to-teal-500 text-white rounded-lg">
+                                <i class="fas fa-crosshairs mr-1"></i> Raíces
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Result -->
+                    <div class="mt-6 p-5 rounded-lg result-container border border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                            <i class="fas fa-square-root-alt mr-2"></i> Resultado
+                        </h3>
+                        <div id="polynomial-result" class="bg-white p-4 rounded-md shadow-inner border border-gray-200 min-h-20">
+                            <p class="text-gray-500 text-center py-4">Los resultados aparecerán aquí...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vectors Section -->
+                <div id="vectors-section" class="hidden fade-in py-8">
+                    <div class="mb-8">
+                        <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 mb-3">
+                            <span class="animate-pulse mr-2">•</span>Operaciones vectoriales
+                        </div>
+                        <h2 class="text-3xl font-bold mb-3 text-gray-800">
+                            Calculadora de <span class="text-indigo-600">Vectores</span>
+                        </h2>
+                        <p class="text-gray-600">
+                            Realiza operaciones con vectores en 2D y 3D
+                        </p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <!-- Vector 1 -->
+                        <div>
+                            <h3 class="font-bold mb-2 text-gray-800 flex items-center">
+                                <i class="fas fa-arrow-right mr-2 text-blue-500"></i> Vector 1
+                            </h3>
+                            <input type="text" id="vector1" class="input-field w-full" placeholder="Ej: 1, 2, 3">
+                        </div>
+                        
+                        <!-- Vector 2 -->
+                        <div>
+                            <h3 class="font-bold mb-2 text-gray-800 flex items-center">
+                                <i class="fas fa-arrow-right mr-2 text-green-500"></i> Vector 2
+                            </h3>
+                            <input type="text" id="vector2" class="input-field w-full" placeholder="Ej: 4, 5, 6">
+                        </div>
+                    </div>
+                    
+                    <!-- Operations -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                            <i class="fas fa-calculator mr-2"></i> Operaciones Disponibles
+                        </h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                            <button onclick="vectorOperation('add')" class="operation-btn px-3 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg">
+                                <i class="fas fa-plus mr-1"></i> Sumar
+                            </button>
+                            <button onclick="vectorOperation('subtract')" class="operation-btn px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg">
+                                <i class="fas fa-minus mr-1"></i> Restar
+                            </button>
+                            <button onclick="vectorOperation('dot')" class="operation-btn px-3 py-2 bg-gradient-to-r from-purple-500 to-violet-500 text-white rounded-lg">
+                                <i class="fas fa-circle-dot mr-1"></i> Punto
+                            </button>
+                            <button onclick="vectorOperation('cross')" class="operation-btn px-3 py-2 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-lg">
+                                <i class="fas fa-times mr-1"></i> Cruz
+                            </button>
+                            <button onclick="vectorOperation('magnitude')" class="operation-btn px-3 py-2 bg-gradient-to-r from-yellow-500 to-amber-500 text-white rounded-lg">
+                                <i class="fas fa-ruler mr-1"></i> Magnitud
+                            </button>
+                            <button onclick="vectorOperation('angle')" class="operation-btn px-3 py-2 bg-gradient-to-r from-cyan-500 to-teal-500 text-white rounded-lg">
+                                <i class="fas fa-angle-right mr-1"></i> Ángulo
+                            </button>
+                            <button onclick="vectorOperation('normalize')" class="operation-btn px-3 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg">
+                                <i class="fas fa-compress mr-1"></i> Normalizar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Result -->
+                    <div class="mt-6 p-5 rounded-lg result-container border border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                            <i class="fas fa-square-root-alt mr-2"></i> Resultado
+                        </h3>
+                        <div id="vector-result" class="bg-white p-4 rounded-md shadow-inner border border-gray-200 min-h-20">
+                            <p class="text-gray-500 text-center py-4">Los resultados aparecerán aquí...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Graphs Section -->
+                <div id="graphs-section" class="hidden fade-in py-8">
+                    <div class="mb-8">
+                        <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 mb-3">
+                            <span class="animate-pulse mr-2">•</span>Visualización gráfica
+                        </div>
+                        <h2 class="text-3xl font-bold mb-3 text-gray-800">
+                            Graficador <span class="text-indigo-600">2D/3D</span>
+                        </h2>
+                        <p class="text-gray-600">
+                            Visualiza funciones matemáticas en 2 y 3 dimensiones
+                        </p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <!-- Graph Type -->
+                        <div>
+                            <h3 class="font-bold mb-2 text-gray-800 flex items-center">
+                                <i class="fas fa-chart-simple mr-2"></i> Tipo de Gráfica
+                            </h3>
+                            <select id="graph-type" class="input-field w-full">
+                                <option value="2d">2D</option>
+                                <option value="3d">3D</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Function -->
+                        <div>
+                            <h3 class="font-bold mb-2 text-gray-800 flex items-center">
+                                <i class="fas fa-function mr-2"></i> Función
+                            </h3>
+                            <input type="text" id="graph-function" class="input-field w-full" value="sin(x)" placeholder="Ej: sin(x), x**2">
+                        </div>
+                        
+                        <!-- Range -->
+                        <div id="graph-range-2d">
+                            <h3 class="font-bold mb-2 text-gray-800 flex items-center">
+                                <i class="fas fa-sliders mr-2"></i> Rango para x
+                            </h3>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="number" id="x-min" class="input-field" value="-10" placeholder="Mínimo">
+                                <input type="number" id="x-max" class="input-field" value="10" placeholder="Máximo">
+                            </div>
+                        </div>
+                        
+                        <div id="graph-range-3d" class="hidden">
+                            <h3 class="font-bold mb-2 text-gray-800 flex items-center">
+                                <i class="fas fa-sliders mr-2"></i> Rango para 3D
+                            </h3>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="number" id="x-min-3d" class="input-field" value="-5" placeholder="x min">
+                                <input type="number" id="x-max-3d" class="input-field" value="5" placeholder="x max">
+                                <input type="number" id="y-min-3d" class="input-field" value="-5" placeholder="y min">
+                                <input type="number" id="y-max-3d" class="input-field" value="5" placeholder="y max">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Plot Button -->
+                    <button onclick="plotFunction()" class="operation-btn px-4 py-3 bg-gradient-to-r from-purple-500 to-violet-500 text-white rounded-lg hover:bg-blue-700 mb-6 w-full">
+                        <i class="fas fa-chart-line mr-2"></i> Graficar Función
+                    </button>
+                    
+                    <!-- Graph -->
+                    <div id="graph-container" class="graph-container border border-gray-200" style="height: 500px; width: 100%; min-height: 400px; position: relative;">
+                        <canvas id="chartCanvas" style="width: 100%; height: 100%;"></canvas>
+                    </div>
+                </div>
+
+                <!-- Calculus Section -->
+                <div id="calculus-section" class="hidden fade-in py-8">
+                    <div class="mb-8">
+                        <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 mb-3">
+                            <span class="animate-pulse mr-2">•</span>Operaciones de cálculo
+                        </div>
+                        <h2 class="text-3xl font-bold mb-3 text-gray-800">
+                            <span class="text-indigo-600">Derivación</span> e <span class="text-indigo-600">Integración</span>
+                        </h2>
+                        <p class="text-gray-600">
+                            Calcula derivadas e integrales de funciones matemáticas
+                        </p>
+                    </div>
+                    
+                    <!-- Function -->
+                    <div class="mb-6">
+                        <h3 class="font-bold mb-2 text-gray-800 flex items-center">
+                            <i class="fas fa-function mr-2"></i> Función
+                        </h3>
+                        <input type="text" id="calculus-function" class="input-field w-full" value="x**2 + sin(x)" placeholder="Ej: x**2 + sin(x)">
+                    </div>
+                    
+                    <!-- Operations -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                            <i class="fas fa-calculator mr-2"></i> Operaciones Disponibles
+                        </h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                            <button onclick="calculusOperation('derivative')" class="operation-btn px-3 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg">
+                                <i class="fas fa-arrow-down mr-1"></i> Derivar
+                            </button>
+                            <button onclick="calculusOperation('integral')" class="operation-btn px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg">
+                                <i class="fas fa-arrow-up mr-1"></i> Integrar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Result -->
+                    <div class="mt-6 p-5 rounded-lg result-container border border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                            <i class="fas fa-square-root-alt mr-2"></i> Resultado
+                        </h3>
+                        <div id="calculus-result" class="bg-white p-4 rounded-md shadow-inner border border-gray-200 min-h-20">
+                            <p class="text-gray-500 text-center py-4">Los resultados aparecerán aquí...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About Section -->
+                <div id="about-section" class="hidden fade-in py-8">
+                    <div class="mb-8">
+                        <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 mb-3">
+                            <span class="animate-pulse mr-2">•</span>Información del proyecto
+                        </div>
+                        <h2 class="text-3xl font-bold mb-3 text-gray-800">
+                            Acerca de <span class="text-indigo-600">SCIENCE CALC</span>
+                        </h2>
+                        <p class="text-gray-600">
+                            Calculadora científica avanzada para el aprendizaje matemático
+                        </p>
+                    </div>
+
+                    <!-- Info Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Project Card -->
+                        <div class="feature-card bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+                            <div class="h-2 bg-gradient-to-r from-indigo-500 to-indigo-600"></div>
+                            <div class="p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 rounded-lg bg-indigo-100 flex items-center justify-center mr-4">
+                                        <i class="fas fa-atom text-indigo-600 text-xl"></i>
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-gray-900">SCIENCE CALC</h3>
+                                </div>
+                                
+                                <div class="ml-16">
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start">
+                                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center mt-0.5 mr-3">
+                                                <i class="fas fa-check text-indigo-600 text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">Calculadora científica avanzada</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center mt-0.5 mr-3">
+                                                <i class="fas fa-check text-indigo-600 text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">Proyecto académico</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center mt-0.5 mr-3">
+                                                <i class="fas fa-check text-indigo-600 text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">Materia: Modelos Matemáticos y Simulación</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center mt-0.5 mr-3">
+                                                <i class="fas fa-check text-indigo-600 text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">2025 - Universidad Estatal de Milagro</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Author Info -->
+                        <div class="feature-card bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+                            <div class="h-2 bg-gradient-to-r from-blue-500 to-blue-600"></div>
+                            <div class="p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center mr-4">
+                                        <i class="fas fa-user-graduate text-blue-600 text-xl"></i>
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-gray-900">Información del Autor</h3>
+                                </div>
+                                
+                                <div class="ml-16">
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start">
+                                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center mt-0.5 mr-3">
+                                                <i class="fas fa-user text-blue-600 text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">Nombre: Steven Alexander Nieto Durán</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center mt-0.5 mr-3">
+                                                <i class="fas fa-graduation-cap text-blue-600 text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">Carrera: Ingeniería en Software</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center mt-0.5 mr-3">
+                                                <i class="fas fa-calendar-alt text-blue-600 text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">Semestre: Sexto Semestre</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center mt-0.5 mr-3">
+                                                <i class="fas fa-calendar text-blue-600 text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-700">Año Académico: 2025</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Professor & Technologies -->
+                        <div class="feature-card bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+                            <div class="h-2 bg-gradient-to-r from-purple-500 to-purple-600"></div>
+                            <div class="p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center mr-4">
+                                        <i class="fas fa-chalkboard-teacher text-purple-600 text-xl"></i>
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-gray-900">Profesor y Tecnologías</h3>
+                                </div>
+                                
+                                <div class="ml-16">
+                                    <div class="mb-5">
+                                        <h4 class="font-medium text-gray-800 mb-2 flex items-center">
+                                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center mr-3">
+                                                <i class="fas fa-user-tie text-purple-600 text-xs"></i>
+                                            </div>
+                                            <span>Profesor</span>
+                                        </h4>
+                                        <p class="text-gray-700 ml-9">Ing. Morales Torres Fabricio</p>
+                                    </div>
+                                    
+                                    <h4 class="font-medium text-gray-800 mb-2 flex items-center">
+                                        <div class="flex-shrink-0 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mr-3">
+                                            <i class="fas fa-code text-green-600 text-xs"></i>
+                                        </div>
+                                        <span>Tecnologías Utilizadas</span>
+                                    </h4>
+                                    <ul class="space-y-2 ml-9">
+                                        <li class="flex items-start">
+                                            <div class="flex-shrink-0 w-5 h-5 rounded-full bg-green-100 flex items-center justify-center mt-0.5 mr-3">
+                                                <i class="fab fa-python text-green-600 text-xs"></i>
+                                            </div>
+                                            <span>Python (Flask, NumPy, SymPy)</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <div class="flex-shrink-0 w-5 h-5 rounded-full bg-green-100 flex items-center justify-center mt-0.5 mr-3">
+                                                <i class="fab fa-html5 text-green-600 text-xs"></i>
+                                            </div>
+                                            <span>HTML, TailwindCSS</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <div class="flex-shrink-0 w-5 h-5 rounded-full bg-green-100 flex items-center justify-center mt-0.5 mr-3">
+                                                <i class="fab fa-js text-green-600 text-xs"></i>
+                                            </div>
+                                            <span>JavaScript, Plotly</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <div class="flex-shrink-0 w-5 h-5 rounded-full bg-green-100 flex items-center justify-center mt-0.5 mr-3">
+                                                <i class="fas fa-square-root-alt text-green-600 text-xs"></i>
+                                            </div>
+                                            <span>Math.js</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 py-6 bg-white border-t border-gray-100">
+            <div class="container mx-auto px-4">
+                <!-- Links -->
+                <div class="flex flex-wrap justify-center gap-6 mb-5">
+                    <a href="#" class="footer-link group">
+                        <div class="p-2 rounded-full footer-icon bg-blue-100 group-hover:bg-blue-200">
+                            <i class="fas fa-book text-blue-500"></i>
+                            <span>Documentación</span>
+                        </div>
+                    </a>
+                    
+                    <a href="#" class="footer-link group">
+                        <div class="footer-icon p-2 rounded-full bg-green-100 group-hover:bg-green-200">
+                            <i class="fas fa-question-circle text-green-500"></i>
+                            <span>Ayuda</span>
+                        </div>
+                    </a>
+                    
+                    <a href="#" class="footer-link group">
+                        <div class="footer-icon p-2 rounded-full bg-red-100 group-hover:bg-red-200">
+                            <i class="fas fa-bug text-red-500"></i>
+                            <span>Reportar problema</span>
+                        </div>
+                    </a>
+                    
+                    <a href="#" class="footer-link group">
+                        <div class="footer-icon p-2 rounded-full bg-purple-100 group-hover:bg-purple-200">
+                            <i class="fas fa-envelope text-purple-500"></i>
+                            <span>Contacto</span>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- Divider -->
+                <div class="border-t border-gray-200 my-4"></div>
+                
+                <!-- Info -->
+                <div class="text-center">
+                    <p class="text-gray-600 mb-1">
+                        © 2025 <span class="font-semibold text-indigo-600">SCIENCE CALC</span> | Calculadora Científica Avanzada
+                    </p>
+                    <p class="text-xs text-gray-500">
+                        v2.5.0 | Modelos Matemáticos y Simulación | Universidad Estatal de Milagro
+                    </p>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+<script src="static/js/main.js"></script>
+
+</body>
+</html>
