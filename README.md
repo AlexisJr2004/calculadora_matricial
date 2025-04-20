@@ -87,4 +87,4 @@ Si encuentras algún problema o tienes sugerencias:
 
 ---
 
-📄 **Licencia MIT** © 2025 - [Alexis Nieto](https://github.com/AlexisJr2004)
+📄 **Licencia MIT** © 2025 - [Steven Alexander Nieto Duran](https://github.com/AlexisJr2004)
