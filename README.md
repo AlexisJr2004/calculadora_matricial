@@ -23,7 +23,7 @@ Con una interfaz intuitiva y capacidades de visualización, es ideal para aplica
 ### Opción 1: Instalador ejecutable (Windows)
 Descarga el instalador desde:
 <p align="center">
-  <a href="https://drive.google.com/file/d/1zZQTWN0MQz0UiD0QjEvNZ83ENiWrL0yR/view?usp=sharing" target="_blank">
+  <a href="https://drive.google.com/drive/folders/19wBxe_--0iD4wVQFVGS0qkgQbykX_vxg?usp=sharing" target="_blank">
     <img src="https://img.shields.io/badge/Descargar_Instalador-4285F4?style=for-the-badge&logo=google-drive&logoColor=white" alt="Descargar Instalador">
   </a>
 </p>
