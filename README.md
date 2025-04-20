@@ -1,20 +1,20 @@
 # SCIENCE CALC - Calculadora Científica Avanzada
 
 <p align="center">
-  <img src="https://cdn3d.iconscout.com/3d/premium/thumb/calculadora-4168193-3457124.png?f=webp" width="150" alt="SCIENCE CALC Logo">
+  <img src="https://cdn3d.iconscout.com/3d/premium/thumb/calculadora-4168193-3457124.png?f=webp" width="150" alt="SCIENCE CALC Logo" style="border-radius: 15px;">
   <br>
   <strong>Herramienta matemática avanzada para estudiantes y profesionales</strong>
 </p>
 
-<div align="center">
-  <a href="https://drive.google.com/drive/folders/19wBxe_--0iD4wVQFVGS0qkgQbykX_vxg?usp=sharing" target="_blank">
-    <img src="https://img.shields.io/badge/⬇️_Descargar_Instalador_Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Descargar Instalador" style="margin: 5px;">
+<div align="center" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 20px 0;">
+  <a href="https://drive.google.com/drive/folders/19wBxe_--0iD4wVQFVGS0qkgQbykX_vxg?usp=sharing" target="_blank" style="text-decoration: none;">
+    <img src="https://img.shields.io/badge/⬇️_Descargar_Instalador_Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white&border-radius=15px" alt="Descargar Instalador">
   </a>
-  <a href="https://drive.google.com/file/d/1JtDPghcKvO6z_McZFq1nti6WILJKssh8/view?usp=sharing" target="_blank">
-    <img src="https://img.shields.io/badge/📘_Manual_de_Usuario-FF6D01?style=for-the-badge&logo=bookstack&logoColor=white" alt="Manual de Usuario" style="margin: 5px;">
+  <a href="https://drive.google.com/file/d/185xn4sWusE-siCI76zf-O_hjFwvlzqjx/view?usp=sharing" target="_blank" style="text-decoration: none;">
+    <img src="https://img.shields.io/badge/📘_Manual_de_Usuario-FF6D01?style=for-the-badge&logo=bookstack&logoColor=white&border-radius=15px" alt="Manual de Usuario">
   </a>
-  <a href="https://github.com/AlexisJr2004/calculadora_matricial" target="_blank">
-    <img src="https://img.shields.io/badge/💻_Repositorio_GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="Repositorio GitHub" style="margin: 5px;">
+  <a href="https://github.com/AlexisJr2004/calculadora_matricial" target="_blank" style="text-decoration: none;">
+    <img src="https://img.shields.io/badge/💻_Repositorio_GitHub-181717?style=for-the-badge&logo=github&logoColor=white&border-radius=15px" alt="Repositorio GitHub">
   </a>
 </div>
 
@@ -35,9 +35,9 @@ Con una interfaz intuitiva y capacidades de visualización, es ideal para aplica
 ### 🔹 Opción 1: Instalador ejecutable (Windows)
 Descarga el instalador auto-ejecutable para una instalación sencilla:
 
-<div align="center">
-  <a href="https://drive.google.com/drive/folders/19wBxe_--0iD4wVQFVGS0qkgQbykX_vxg?usp=sharing" target="_blank">
-    <img src="https://img.shields.io/badge/⬇️_Descargar_Instalador-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Descargar Instalador">
+<div align="center" style="margin: 20px 0;">
+  <a href="https://drive.google.com/drive/folders/19wBxe_--0iD4wVQFVGS0qkgQbykX_vxg?usp=sharing" target="_blank" style="text-decoration: none;">
+    <img src="https://img.shields.io/badge/⬇️_Descargar_Instalador-0078D6?style=for-the-badge&logo=windows&logoColor=white&border-radius=15px" alt="Descargar Instalador">
   </a>
 </div>
 
@@ -70,9 +70,9 @@ http://localhost:5000
 
 Descarga el manual completo de usuario:
 
-<div align="center">
-  <a href="https://drive.google.com/file/d/1JtDPghcKvO6z_McZFq1nti6WILJKssh8/view?usp=sharing" target="_blank">
-    <img src="https://img.shields.io/badge/📘_Manual_de_Usuario-FF6D01?style=for-the-badge&logo=bookstack&logoColor=white" alt="Manual de Usuario">
+<div align="center" style="margin: 20px 0;">
+  <a href="https://drive.google.com/file/d/185xn4sWusE-siCI76zf-O_hjFwvlzqjx/view?usp=sharing" target="_blank" style="text-decoration: none;">
+    <img src="https://img.shields.io/badge/📘_Manual_de_Usuario-FF6D01?style=for-the-badge&logo=bookstack&logoColor=white&border-radius=15px" alt="Manual de Usuario">
   </a>
 </div>
 
@@ -99,12 +99,12 @@ plotly==5.24.1     # Visualización gráfica
 
 Si encuentras algún problema o tienes sugerencias:
 
-<div align="center">
-  <a href="https://github.com/AlexisJr2004/calculadora_matricial/issues" target="_blank">
-    <img src="https://img.shields.io/badge/📌_Reportar_Issue-181717?style=for-the-badge&logo=github&logoColor=white" alt="Reportar Issue">
+<div align="center" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 20px 0;">
+  <a href="https://github.com/AlexisJr2004/calculadora_matricial/issues" target="_blank" style="text-decoration: none;">
+    <img src="https://img.shields.io/badge/📌_Reportar_Issue-181717?style=for-the-badge&logo=github&logoColor=white&border-radius=15px" alt="Reportar Issue">
   </a>
-  <a href="mailto:snietod@unemi.edu.ec">
-    <img src="https://img.shields.io/badge/✉️_Contacto-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Contacto">
+  <a href="mailto:snietod@unemi.edu.ec" style="text-decoration: none;">
+    <img src="https://img.shields.io/badge/✉️_Contacto-D14836?style=for-the-badge&logo=gmail&logoColor=white&border-radius=15px" alt="Contacto">
   </a>
 </div>
 
