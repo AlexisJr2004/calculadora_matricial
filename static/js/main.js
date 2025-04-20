@@ -1,316 +1,199 @@
-// Función para mostrar/ocultar secciones
-function showSection(sectionId) {
-  // Ocultar todas las secciones
-  document.querySelectorAll("#content > div").forEach((div) => {
-    div.classList.add("hidden");
-  });
+/**
+ * =============================================
+ * 🚀      CALCULADORA MATEMÁTICA AVANZADA
+ * =============================================
+ * 
+ * 📄 DESCRIPCIÓN:
+ * Aplicación completa para operaciones matemáticas que incluye:
+ * - Operaciones con matrices
+ * - Manipulación de polinomios
+ * - Cálculo vectorial
+ * - Graficación de funciones 2D/3D
+ * - Cálculo diferencial e integral
+ * 
+ * 🏗️ ESTRUCTURA:
+ * 1. Gestión de Interfaz
+ * 2. Operaciones con Matrices
+ * 3. Operaciones con Polinomios
+ * 4. Operaciones con Vectores
+ * 5. Graficación de Funciones
+ * 6. Operaciones de Cálculo
+ */
 
-  // Mostrar la sección seleccionada
-  document.getElementById(`${sectionId}-section`).classList.remove("hidden");
+// =============================================
+// 1. 🖥️ GESTIÓN DE INTERFAZ
+// =============================================
 
-  // Update active tab
-  document.querySelectorAll(".tab-button").forEach((button) => {
-    button.classList.remove("active");
-  });
-  document.getElementById(`${sectionId}Tab`).classList.add("active");
+function showSection(sectionId) { // - ID de la sección a mostrar
+    // 1. Oculta todas las secciones
+    document.querySelectorAll("#content > div").forEach((div) => {
+        div.classList.add("hidden");
+    });
 
-  // Trigger fade-in animation
-  document.getElementById(`${sectionId}-section`).classList.add("fade-in");
+    // 2. Muestra solo la sección seleccionada
+    document.getElementById(`${sectionId}-section`).classList.remove("hidden");
 
-  // Si es la sección de matrices, actualizar el tamaño
-  if (sectionId === "matrices") {
-    updateMatrixSize();
-  }
+    // 3. Actualiza el botón activo
+    document.querySelectorAll(".tab-button").forEach((button) => {
+        button.classList.remove("active");
+    });
+    document.getElementById(`${sectionId}Tab`).classList.add("active");
+
+    // 4. Caso especial: Actualiza tamaño de matrices al mostrar esa sección
+    if (sectionId === "matrices") {
+        updateMatrixSize();
+    }
 }
 
-// Manejar cambios en el tipo de gráfica
-document.getElementById("graph-type").addEventListener("change", function () {
-  const type = this.value;
-  document
-    .getElementById("graph-range-2d")
-    .classList.toggle("hidden", type !== "2d");
-  document
-    .getElementById("graph-range-3d")
-    .classList.toggle("hidden", type === "2d");
+// Configuración inicial al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    showSection("home");
 });
 
-// *******************************************************************
-// *         INICIO DEL CÓDIGO DE LAS OPERACIONES CON MATRICES       *
-// *******************************************************************
+// =============================================
+// 2. 🔢 OPERACIONES CON MATRICES
+// =============================================
 
-// Variables globales para el tamaño de las matrices
 let matrixRows = 3;
 let matrixCols = 3;
 
-// Funciones de validación
-function validateMatrixDimensions(a, b) {
-    if (!a || !b) throw new Error("Ambas matrices son requeridas");
-    if (a.length !== b.length || a[0].length !== b[0].length) {
-        throw new Error("Las matrices deben tener las mismas dimensiones");
-    }
-}
-
-function validateSquareMatrix(matrix) {
-    if (matrix.length !== matrix[0].length) {
-        throw new Error("La matriz debe ser cuadrada (mismo número de filas y columnas)");
-    }
-}
-
-function validateMatrixMultiplication(a, b) {
-    if (!a || !b) throw new Error("Ambas matrices son requeridas");
-    if (a[0].length !== b.length) {
-        throw new Error("El número de columnas de la primera matriz debe coincidir con el número de filas de la segunda");
-    }
-}
-
-// Funciones de utilidad para matrices
-function randomizeMatrix(matrix) {
-    const inputs = document.querySelectorAll(`#matrix${matrix} input`);
-    inputs.forEach((input) => {
-      input.value = Math.floor(Math.random() * 10) - 5;
-    });
-}
-
-function clearMatrix(matrix) {
-    const inputs = document.querySelectorAll(`#matrix${matrix} input`);
-    inputs.forEach((input) => {
-      input.value = "";
-    });
-}
-
+/**
+ * Actualiza el tamaño de las matrices en la interfaz
+ */
 function updateMatrixSize() {
     matrixRows = parseInt(document.getElementById("matrix-rows").value);
     matrixCols = parseInt(document.getElementById("matrix-cols").value);
 
-    const createInputs = (containerId) => {
-        const container = document.getElementById(containerId);
-        container.innerHTML = "";
-        container.style.gridTemplateColumns = `repeat(${matrixCols}, 1fr)`;
-
-        for (let i = 0; i < matrixRows * matrixCols; i++) {
-            const input = document.createElement("input");
-            input.type = "number";
-            input.className = "matrix-input";
-            input.placeholder = "0";
-            input.value = "0";
-            container.appendChild(input);
-        }
-    };
-    createInputs("matrixA");
-    createInputs("matrixB");
+    // Crea los inputs para Matrix A y B
+    createMatrixInputs("matrixA");
+    createMatrixInputs("matrixB");
 }
 
-// Función corregida para obtener valores de la matriz
-function getMatrixValues(matrixId, rows, cols) {
-    const container = document.getElementById(matrixId);
-    if (!container) {
-        throw new Error(`No se encontró el contenedor de la matriz con ID: ${matrixId}`);
-    }
+function createMatrixInputs(containerId) { // - ID del contenedor (matrixA o matrixB)
+    const container = document.getElementById(containerId);
+    container.innerHTML = "";
+    container.style.gridTemplateColumns = `repeat(${matrixCols}, 1fr)`;
 
-    const inputs = container.getElementsByTagName("input");
-    if (inputs.length !== rows * cols) {
-        throw new Error(`Número incorrecto de inputs. Esperados: ${rows * cols}, Encontrados: ${inputs.length}`);
+    for (let i = 0; i < matrixRows * matrixCols; i++) {
+        const input = document.createElement("input");
+        input.type = "number";
+        input.className = "matrix-input";
+        input.placeholder = "0";
+        container.appendChild(input);
     }
+}
 
+/**
+ * Llena una matriz con valores aleatorios
+ */
+function randomizeMatrix(matrix) {
+    const inputs = document.querySelectorAll(`#matrix${matrix} input`);
+    inputs.forEach(input => {
+        input.value = Math.floor(Math.random() * 10) - 5; // Valores entre -5 y 5
+    });
+}
+
+/**
+ * Limpia una matriz
+ */
+function clearMatrix(matrix) {
+    const inputs = document.querySelectorAll(`#matrix${matrix} input`);
+    inputs.forEach(input => input.value = "");
+}
+
+/**
+ * Obtiene los valores de una matriz desde los inputs
+ * matrixId - 'matrixA' o 'matrixB'
+ * returns {Array} Matriz numérica
+ */
+function getMatrixValues(matrixId) {
+    const inputs = document.querySelectorAll(`#${matrixId} input`);
     const matrix = [];
-    for (let i = 0; i < rows; i++) {
+    
+    for (let i = 0; i < matrixRows; i++) {
         const row = [];
-        for (let j = 0; j < cols; j++) {
-            const index = i * cols + j;
-            const input = inputs[index];
-            const value = input.value ? parseFloat(input.value) : 0;
-            if (isNaN(value)) {
-                throw new Error(`Valor inválido en fila ${i + 1}, columna ${j + 1}`);
-            }
+        for (let j = 0; j < matrixCols; j++) {
+            const index = i * matrixCols + j;
+            const value = parseFloat(inputs[index].value) || 0;
             row.push(value);
         }
         matrix.push(row);
     }
+    
     return matrix;
 }
 
-// Inicializar las matrices al cargar la página
-document.addEventListener('DOMContentLoaded', function() {
-    updateMatrixSize();
-});
-
-/******************************************************************************************
- *                                                                                        
- *  📦 MÓDULO: Operaciones con Matrices                                                    
- *                                                                                        
- *  📄 DESCRIPCIÓN:                                                                       
- *  Este módulo contiene funciones relacionadas con la creación, manipulación y análisis  
- *  de estructuras matriciales. Incluye operaciones como suma, resta, transposición,      
- *  multiplicación, entre otras utilidades matemáticas útiles en procesamiento de datos,  
- *  gráficos y álgebra lineal.                                                            
- *                                                                                        
- *  🧑‍💻 AUTOR: [Tu Nombre o Equipo]                                                       
- *  🗓️  FECHA: [Fecha de creación]                                                        
- *                                                                                        
- ******************************************************************************************/
-function matrixOperation(operation) {
+/**
+ * Llamado para la resolución de las operancions
+ * 'add', 'subtract', 'multiply', etc.
+ */
+async function matrixOperation(operation) {
     try {
-        const rows = parseInt(document.getElementById("matrix-rows").value);
-        const cols = parseInt(document.getElementById("matrix-cols").value);
-        
-        // Siempre necesitamos la matriz A
-        const matrixA = getMatrixValues("matrixA", rows, cols);
-        let matrixB, result;
+        const matrixA = getMatrixValues("matrixA");
+        let requestData = { operation, matrixA };
 
-        switch (operation) {
-            case "add":
-                matrixB = getMatrixValues("matrixB", rows, cols);
-                validateMatrixDimensions(matrixA, matrixB);
-                result = addMatrices(matrixA, matrixB);
-                displayMatrixResult(result, "matrix");
-                break;
-                
-            case "subtract":
-                matrixB = getMatrixValues("matrixB", rows, cols);
-                validateMatrixDimensions(matrixA, matrixB);
-                result = subtractMatrices(matrixA, matrixB);
-                displayMatrixResult(result, "matrix");
-                break;
-                
-            case "multiply":
-                matrixB = getMatrixValues("matrixB", rows, cols);
-                validateMatrixMultiplication(matrixA, matrixB);
-                result = multiplyMatrices(matrixA, matrixB);
-                displayMatrixResult(result, "matrix");
-                break;
-                
-            case "determinant":
-                validateSquareMatrix(matrixA);
-                result = calculateDeterminant(matrixA);
-                displayMatrixResult(result, "number");
-                break;
-                
-            case "inverse":
-                validateSquareMatrix(matrixA);
-                result = calculateInverse(matrixA);
-                displayMatrixResult(result, "matrix");
-                break;
-                
-            case "transpose":
-                result = transposeMatrix(matrixA);
-                displayMatrixResult(result, "matrix");
-                break;
-                
-            case "rank":
-                result = calculateRank(matrixA);
-                displayMatrixResult(result, "number");
-                break;
-                
-            case "trace":
-                validateSquareMatrix(matrixA);
-                result = calculateTrace(matrixA);
-                displayMatrixResult(result, "number");
-                break;
-                
-            default:
-                throw new Error("Operación no reconocida");
+        // Operaciones que requieren matrixB
+        if (['add', 'subtract', 'multiply'].includes(operation)) {
+            requestData.matrixB = getMatrixValues("matrixB");
         }
+
+        // Mostrar carga
+        displayMatrixResult("Calculando...", "loading");
+
+        // Enviar al backend
+        const response = await fetch('/matrix_operation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestData)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            displayMatrixResult(data.result, Array.isArray(data.result) ? "matrix" : "number");
+        } else {
+            displayMatrixResult(`Error: ${data.error}`, "error");
+        }
+
     } catch (error) {
         displayMatrixResult(`Error: ${error.message}`, "error");
     }
 }
 
-// Operaciones matriciales básicas
-function addMatrices(a, b) {
-    return a.map((row, i) => row.map((val, j) => val + b[i][j]));
-}
-
-function subtractMatrices(a, b) {
-    return a.map((row, i) => row.map((val, j) => val - b[i][j]));
-}
-
-function multiplyMatrices(a, b) {
-    const result = new Array(a.length);
-    for (let i = 0; i < a.length; i++) {
-        result[i] = new Array(b[0].length).fill(0);
-        for (let j = 0; j < b[0].length; j++) {
-            for (let k = 0; k < a[0].length; k++) {
-                result[i][j] += a[i][k] * b[k][j];
-            }
-        }
-    }
-    return result;
-}
-
-// Operaciones matriciales avanzadas
-function calculateDeterminant(matrix) {
-    if (matrix.length === 1) return matrix[0][0];
-    if (matrix.length === 2) {
-        return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
-    }
-
-    let det = 0;
-    for (let col = 0; col < matrix.length; col++) {
-        const minor = matrix.slice(1).map(row => 
-            row.filter((_, j) => j !== col)
-        );
-        det += matrix[0][col] * Math.pow(-1, col) * calculateDeterminant(minor);
-    }
-    return det;
-}
-
-function transposeMatrix(matrix) {
-    return matrix[0].map((_, col) => matrix.map(row => row[col]));
-}
-
-function calculateTrace(matrix) {
-    return matrix.reduce((sum, row, i) => sum + row[i], 0);
-}
-
-function calculateRank(matrix) {
-    const eps = 1e-10;
-    return matrix.filter(row => 
-        row.some(val => Math.abs(val) > eps)
-    ).length;
-}
-
-function calculateInverse(matrix) {
-    const det = calculateDeterminant(matrix);
-    if (Math.abs(det) < 1e-10) {
-        throw new Error("La matriz no es invertible (determinante cero)");
-    }
-
-    if (matrix.length === 1) return [[1 / matrix[0][0]]];
-    if (matrix.length === 2) {
-        return [
-            [matrix[1][1]/det, -matrix[0][1]/det],
-            [-matrix[1][0]/det, matrix[0][0]/det]
-        ];
-    }
-
-    // Matriz de cofactores
-    const cofactors = matrix.map((row, i) => 
-        row.map((_, j) => {
-            const minor = matrix.filter((_, ii) => ii !== i)
-                            .map(r => r.filter((_, jj) => jj !== j));
-            return Math.pow(-1, i + j) * calculateDeterminant(minor);
-        })
-    );
-
-    // Matriz adjunta (transpuesta de la matriz de cofactores)
-    const adjugate = transposeMatrix(cofactors);
-    
-    // Matriz inversa (adjunta dividida por el determinante)
-    return adjugate.map(row => row.map(val => val / det));
-}
-
-// Mostrar resultados
+/**
+ * Muestra el resultado de una operación
+ * {Array|number|string} result - Resultado a mostrar
+ * {string} type - 'matrix', 'number', 'error', 'loading'
+ */
 function displayMatrixResult(result, type) {
     const resultDiv = document.getElementById("matrix-result");
     
+    if (type === "loading") {
+        resultDiv.innerHTML = `<div class="text-center p-4">⏳ ${result}</div>`;
+        return;
+    }
+
+    if (type === "error") {
+        resultDiv.innerHTML = `
+            <div class="text-center p-4 text-red-500">
+                <p class="font-bold">Error</p>
+                <p>${result}</p>
+            </div>
+        `;
+        return;
+    }
+
     if (type === "number") {
         resultDiv.innerHTML = `
             <div class="text-center p-4">
                 <p class="text-lg font-bold">Resultado:</p>
-                <p class="text-2xl mt-2">${result.toFixed(4)}</p>
+                <p class="text-2xl mt-2">${Number(result).toFixed(4)}</p>
             </div>
         `;
-    } else if (type === "matrix") {
+        return;
+    }
+
+    if (type === "matrix") {
         let html = `
             <div class="text-center">
                 <p class="font-bold mb-2">Matriz Resultante (${result.length}×${result[0].length}):</p>
@@ -330,29 +213,18 @@ function displayMatrixResult(result, type) {
         
         html += "</div></div>";
         resultDiv.innerHTML = html;
-    } else {
-        resultDiv.innerHTML = `
-            <div class="text-center p-4">
-                <p class="text-lg">${result}</p>
-            </div>
-        `;
     }
 }
 
-/******************************************************************************************
- *                                                                                        
- *  📦 MÓDULO: Operaciones con Polinomios                                                  
- *                                                                                        
- *  📄 DESCRIPCIÓN:                                                                       
- *  Este módulo implementa funciones para la manipulación y evaluación de polinomios.    
- *  Incluye operaciones como suma, resta, multiplicación, derivación y evaluación en      
- *  puntos específicos. Diseñado para aplicaciones matemáticas, educativas y científicas. 
- *                                                                                        
- *  🧑‍💻 AUTOR: [Tu Nombre o Equipo]                                                       
- *  🗓️  FECHA: [Fecha de creación]                                                        
- *                                                                                        
- ******************************************************************************************/
- function polynomialOperation(operation) {
+// =============================================
+// 3. 📈 OPERACIONES CON POLINOMIOS
+// =============================================
+
+/**
+ * Realiza una operación con polinomios
+ * {string} operation - Tipo de operación ('add', 'subtract', 'multiply', etc.)
+ */
+function polynomialOperation(operation) {
     const poly1 = document.getElementById("poly1").value;
     let poly2 = null;
 
@@ -374,7 +246,7 @@ function displayMatrixResult(result, type) {
     const resultDiv = document.getElementById("polynomial-result");
     resultDiv.innerHTML = '<p class="text-center py-4">Calculando...</p>';
 
-    // Prepare the request data
+    // Preparar datos para la solicitud
     const requestData = {
         operation: operation,
         poly1: poly1
@@ -384,7 +256,7 @@ function displayMatrixResult(result, type) {
         requestData.poly2 = poly2;
     }
 
-    // Make the API call
+    // Hacer la llamada API
     fetch('/polynomial_operation', {
         method: 'POST',
         headers: {
@@ -395,7 +267,7 @@ function displayMatrixResult(result, type) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Render the result using MathJax
+            // Renderizar el resultado con MathJax
             resultDiv.innerHTML = `
                 <div class="p-4">
                     <div class="font-bold mb-2 text-lg text-center">${getOperationName(operation)}</div>
@@ -407,7 +279,7 @@ function displayMatrixResult(result, type) {
                     </div>
                 </div>
             `;
-            // Tell MathJax to render the new LaTeX
+            // Decirle a MathJax que renderice el nuevo LaTeX
             if (typeof MathJax !== 'undefined') {
                 MathJax.typeset();
             }
@@ -428,6 +300,11 @@ function displayMatrixResult(result, type) {
     });
 }
 
+/**
+ * Obtiene el nombre legible de una operación
+ * {string} operation - Identificador de la operación
+ * returns {string} Nombre legible
+ */
 function getOperationName(operation) {
     const names = {
         'add': 'Suma de Polinomios',
@@ -440,20 +317,15 @@ function getOperationName(operation) {
     return names[operation] || operation;
 }
 
-/******************************************************************************************
- *                                                                                        
- *  📦 MÓDULO: Operaciones con Vectores                                                   
- *                                                                                        
- *  📄 DESCRIPCIÓN:                                                                       
- *  Este módulo proporciona funciones para la manipulación y análisis de vectores.        
- *  Incluye operaciones como suma, resta, producto punto, producto cruzado, normalización,
- *  y cálculo de magnitudes. Ideal para álgebra lineal, gráficos computacionales y física.
- *                                                                                        
- *  🧑‍💻 AUTOR: [Tu Nombre o Equipo]                                                       
- *  🗓️  FECHA: [Fecha de creación]                                                        
- *                                                                                        
- ******************************************************************************************/
- async function vectorOperation(operation) {
+// =============================================
+// 4. ➡️ OPERACIONES CON VECTORES
+// =============================================
+
+/**
+ * Realiza una operación vectorial
+ * {string} operation - Tipo de operación ('add', 'subtract', 'dot', 'cross', etc.)
+ */
+async function vectorOperation(operation) {
     const vector1Input = document.getElementById("vector1").value;
     let vector2Input = "";
     
@@ -534,22 +406,11 @@ function getOperationName(operation) {
     }
 }
 
-/******************************************************************************************
- *                                                                                        
- *  📦 MÓDULO: Graficar Funciones                                                         
- *                                                                                        
- *  📄 DESCRIPCIÓN:                                                                       
- *  Este módulo permite la representación gráfica de funciones matemáticas.              
- *  Soporta funciones lineales, cuadráticas, polinomiales, trigonométricas,              
- *  y más. Utiliza bibliotecas de renderizado para mostrar visualmente el comportamiento 
- *  de las funciones sobre un sistema de coordenadas. Ideal para entornos educativos,     
- *  científicos o de análisis de datos.                                                   
- *                                                                                        
- *  🧑‍💻 AUTOR: [Tu Nombre o Equipo]                                                       
- *  🗓️  FECHA: [Fecha de creación]                                                        
- *                                                                                        
- ******************************************************************************************/
- let currentChart = null;
+// =============================================
+// 5. 📊 GRAFICACIÓN DE FUNCIONES
+// =============================================
+
+let currentChart = null;
 
  function plotFunction() {
      const type = document.getElementById("graph-type").value;
@@ -593,184 +454,102 @@ function getOperationName(operation) {
  }
  
  function render2DGraph(data) {
-     const x_min = data.x_min;
-     const x_max = data.x_max;
-     const points = 200;
-     const step = (x_max - x_min) / points;
-     
-     // Generar los puntos x
-     const xValues = [];
-     for (let i = 0; i <= points; i++) {
-         xValues.push(x_min + i * step);
-     }
-     
-     // Evaluar la función
-     const yValues = [];
-     const expression = data.function.replace(/sin/g, 'Math.sin')
-                                   .replace(/cos/g, 'Math.cos')
-                                   .replace(/tan/g, 'Math.tan')
-                                   .replace(/\^/g, '**')
-                                   .replace(/pi/g, 'Math.PI')
-                                   .replace(/exp/g, 'Math.exp')
-                                   .replace(/sqrt/g, 'Math.sqrt')
-                                   .replace(/abs/g, 'Math.abs')
-                                   .replace(/log/g, 'Math.log');
-     
-     // Filtrar valores infinitos o NaN
-     for (let x of xValues) {
-         try {
-             const result = eval(expression.replace(/x/g, x));
-             if (isFinite(result)) {
-                 yValues.push(result);
-             } else {
-                 yValues.push(null);
-             }
-         } catch (e) {
-             yValues.push(null);
-         }
-     }
-     
-     // Configurar y mostrar el gráfico usando Chart.js
-     const ctx = document.getElementById('chartCanvas').getContext('2d');
-     
-     // Destruir gráfico existente si hay uno
-     if (currentChart) {
-         currentChart.destroy();
-     }
-     
-     currentChart = new Chart(ctx, {
-         type: 'line',
-         data: {
-             labels: xValues,
-             datasets: [{
-                 label: `f(x) = ${data.function}`,
-                 data: yValues,
-                 borderColor: '#6366f1',
-                 borderWidth: 2,
-                 fill: false,
-                 tension: 0.1,
-                 pointRadius: 0  // No mostrar puntos individuales para un renderizado más suave
-             }]
-         },
-         options: {
-             responsive: true,
-             maintainAspectRatio: false,
-             scales: {
-                 x: {
-                     title: {
-                         display: true,
-                         text: 'x'
-                     }
-                 },
-                 y: {
-                     title: {
-                         display: true,
-                         text: 'f(x)'
-                     }
-                 }
-             },
-             plugins: {
-                 title: {
-                     display: true,
-                     text: `Gráfica de f(x) = ${data.function}`
-                 }
-             }
-         }
-     });
- }
+    fetch('/plot_function', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(response => {
+        if (!response.success) {
+            alert("Error al generar gráfica: " + response.error);
+            return;
+        }
+
+        // Extraer los datos
+        const xValues = response.x;
+        const yValues = response.y;
+
+        const ctx = document.getElementById('chartCanvas').getContext('2d');
+        if (currentChart) currentChart.destroy();
+
+        currentChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: xValues,
+                datasets: [{
+                    label: `f(x) = ${response.function}`,
+                    data: yValues,
+                    borderColor: '#6366f1',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { title: { display: true, text: 'x' } },
+                    y: { title: { display: true, text: 'f(x)' } }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `Gráfica de f(x) = ${response.function}`
+                    }
+                }
+            }
+        });
+    })
+    .catch(err => {
+        alert("Error de red: " + err);
+    });
+}
  
- function render3DGraph(data) {
-     const x_min = data.x_min;
-     const x_max = data.x_max;
-     const y_min = data.y_min;
-     const y_max = data.y_max;
-     const points = 50; // Menos puntos para mejor rendimiento en 3D
-     
-     // Generar puntos para la malla
-     const xStep = (x_max - x_min) / points;
-     const yStep = (y_max - y_min) / points;
-     
-     // Crear arrays para X, Y, Z
-     let X = [];
-     let Y = [];
-     let Z = [];
-     
-     // Crear la malla
-     for (let i = 0; i <= points; i++) {
-         let xRow = [];
-         let yRow = [];
-         let zRow = [];
-         let y = y_min + i * yStep;
-         
-         for (let j = 0; j <= points; j++) {
-             let x = x_min + j * xStep;
-             xRow.push(x);
-             yRow.push(y);
-             
-             // Evaluar función en el punto (x,y)
-             let expression = data.function
-                 .replace(/sin/g, 'Math.sin')
-                 .replace(/cos/g, 'Math.cos')
-                 .replace(/tan/g, 'Math.tan')
-                 .replace(/\^/g, '**')
-                 .replace(/pi/g, 'Math.PI')
-                 .replace(/exp/g, 'Math.exp')
-                 .replace(/sqrt/g, 'Math.sqrt')
-                 .replace(/abs/g, 'Math.abs')
-                 .replace(/log/g, 'Math.log');
-             
-             try {
-                 let z = eval(expression.replace(/x/g, x).replace(/y/g, y));
-                 if (isFinite(z)) {
-                     zRow.push(z);
-                 } else {
-                     zRow.push(null);
-                 }
-             } catch (e) {
-                 zRow.push(null);
-             }
-         }
-         
-         X.push(xRow);
-         Y.push(yRow);
-         Z.push(zRow);
-     }
-     
-     // Crear la gráfica 3D con Plotly
-     const trace = {
-         x: X,
-         y: Y,
-         z: Z,
-         type: 'surface',
-         colorscale: 'Viridis',
-         contours: {
-             z: {
-                 show: true,
-                 usecolormap: true,
-                 highlightcolor: "#42f5ef"
-             }
-         }
-     };
-     
-     const layout = {
-         title: `Gráfica 3D de f(x,y) = ${data.function}`,
-         autosize: true,
-         margin: {
-             l: 65,
-             r: 50,
-             b: 65,
-             t: 90,
-         },
-         scene: {
-             xaxis: { title: 'X' },
-             yaxis: { title: 'Y' },
-             zaxis: { title: 'f(x,y)' },
-             aspectratio: { x: 1, y: 1, z: 0.7 }
-         }
-     };
-     
-     Plotly.newPlot('plotly-container', [trace], layout, {responsive: true});
- }
+function render3DGraph(data) {
+    fetch('/plot_function', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(response => {
+        if (!response.success) {
+            alert("Error al generar gráfica 3D: " + response.error);
+            return;
+        }
+
+        const trace = {
+            x: response.x,
+            y: response.y,
+            z: response.z,
+            type: 'surface',
+            colorscale: 'Viridis',
+            contours: {
+                z: { show: true, usecolormap: true, highlightcolor: "#42f5ef" }
+            }
+        };
+
+        const layout = {
+            title: `Gráfica 3D de f(x,y) = ${response.function}`,
+            autosize: true,
+            margin: { l: 65, r: 50, b: 65, t: 90 },
+            scene: {
+                xaxis: { title: 'X' },
+                yaxis: { title: 'Y' },
+                zaxis: { title: 'f(x,y)' },
+                aspectratio: { x: 1, y: 1, z: 0.7 }
+            }
+        };
+
+        Plotly.newPlot('plotly-container', [trace], layout, { responsive: true });
+    })
+    .catch(err => {
+        alert("Error de red: " + err);
+    });
+}
  
  // Manejar cambio entre 2D y 3D
  document.getElementById('graph-type').addEventListener('change', function() {
@@ -779,20 +558,14 @@ function getOperationName(operation) {
      document.getElementById('graph-range-3d').classList.toggle('hidden', type === '2d');
  });
 
-/******************************************************************************************
- *                                                                                        
- *  📦 MÓDULO: Operaciones de Cálculo (Derivadas / Integrales)                            
- *                                                                                        
- *  📄 DESCRIPCIÓN:                                                                       
- *  Este módulo implementa funciones para el cálculo simbólico y numérico de derivadas   
- *  e integrales. Incluye reglas de derivación, integración definida e indefinida,       
- *  simplificación de expresiones y evaluación en puntos. Diseñado para aplicaciones      
- *  educativas, científicas y de análisis matemático avanzado.                            
- *                                                                                        
- *  🧑‍💻 AUTOR: [Tu Nombre o Equipo]                                                       
- *  🗓️  FECHA: [Fecha de creación]                                                        
- *                                                                                        
- ******************************************************************************************/
+// =============================================
+// 6. ∫🔍 OPERACIONES DE CÁLCULO
+// =============================================
+
+/**
+ * Muestra las opciones específicas para cada operación de cálculo
+ * {string} operation - Tipo de operación ('derivative', 'integral', 'limit', etc.)
+ */
 function showCalculusOptions(operation) {
     document.getElementById("limit-point-container").classList.add("hidden");
     document.getElementById("taylor-options-container").classList.add("hidden");
@@ -804,7 +577,10 @@ function showCalculusOptions(operation) {
     }
 }
 
-// Función para enviar la operación al backend
+/**
+ * Realiza una operación de cálculo (derivada, integral, límite, etc.)
+ * {string} operation - Tipo de operación
+ */
 function calculusOperation(operation) {
     const func = document.getElementById("calculus-function").value;
     const resultDiv = document.getElementById("calculus-result");
@@ -838,7 +614,6 @@ function calculusOperation(operation) {
         body: JSON.stringify(data)
     })
     .then(response => response.json())
-    // Dentro de la función calculusOperation, en el then del fetch:
     .then(data => {
         if (data.success) {
             resultDiv.innerHTML = `
@@ -869,14 +644,10 @@ function calculusOperation(operation) {
     });
 }
 
-// Actualizar los event listeners para los botones
+// Configurar event listeners para los botones de cálculo
 document.querySelectorAll('.operation-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         const operation = this.getAttribute('onclick').match(/'([^']+)'/)[1];
         showCalculusOptions(operation);
     });
 });
-
-// Initialize with home section
-showSection("home");
-

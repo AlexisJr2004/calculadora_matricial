@@ -24,21 +24,53 @@ def matrix_operation():
     operation = data['operation']
     matrix_a = np.array(data['matrixA'])
     matrix_b = np.array(data['matrixB']) if 'matrixB' in data else None
+    
     try:
+        # Validaciones comunes
+        if operation in ['add', 'subtract']:
+            if matrix_a.shape != matrix_b.shape:
+                raise ValueError("Las matrices deben tener las mismas dimensiones")
+        
+        if operation in ['multiply']:
+            if matrix_a.shape[1] != matrix_b.shape[0]:
+                raise ValueError("El número de columnas de A debe coincidir con filas de B")
+        
+        if operation in ['determinant', 'inverse', 'trace']:
+            if matrix_a.shape[0] != matrix_a.shape[1]:
+                raise ValueError("La matriz debe ser cuadrada")
+
+        # Operaciones
         if operation == 'add':
-            result = matrix_a + matrix_b
+            result = (matrix_a + matrix_b).tolist()
         elif operation == 'subtract':
-            result = matrix_a - matrix_b
+            result = (matrix_a - matrix_b).tolist()
         elif operation == 'multiply':
-            result = np.dot(matrix_a, matrix_b)
+            result = np.dot(matrix_a, matrix_b).tolist()
         elif operation == 'determinant':
-            result = np.linalg.det(matrix_a)
+            result = float(np.linalg.det(matrix_a))
         elif operation == 'inverse':
             result = np.linalg.inv(matrix_a).tolist()
+        elif operation == 'transpose':
+            result = matrix_a.T.tolist()
+        elif operation == 'trace':
+            result = float(np.trace(matrix_a))
+        elif operation == 'rank':
+            result = int(np.linalg.matrix_rank(matrix_a))
+        else:
+            raise ValueError("Operación no soportada")
         
-        return jsonify({'success': True, 'result': str(result)})
+        return jsonify({
+            'success': True,
+            'result': result,
+            'details': f"Operación {operation} completada"
+        })
+        
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)})
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'details': "Error en operación matricial"
+        })
 
 # ********************************************
 # *         OPERACIONES CON POLINOMIOS       *
