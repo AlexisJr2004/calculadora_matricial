@@ -19,7 +19,7 @@ cd calculadora_matricial
 
 ### **2. Instalar dependencias**  
 ```bash
-pip install flask numpy sympy plotly
+pip install -r requirements.txt
 ```  
 
 ### **3. Ejecutar la aplicación**  
