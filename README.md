@@ -6,6 +6,18 @@
   <strong>Herramienta matemática avanzada para estudiantes y profesionales</strong>
 </p>
 
+<div align="center">
+  <a href="https://drive.google.com/drive/folders/19wBxe_--0iD4wVQFVGS0qkgQbykX_vxg?usp=sharing" target="_blank">
+    <img src="https://img.shields.io/badge/⬇️_Descargar_Instalador_Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Descargar Instalador" style="margin: 5px;">
+  </a>
+  <a href="https://drive.google.com/file/d/1JtDPghcKvO6z_McZFq1nti6WILJKssh8/view?usp=sharing" target="_blank">
+    <img src="https://img.shields.io/badge/📘_Manual_de_Usuario-FF6D01?style=for-the-badge&logo=bookstack&logoColor=white" alt="Manual de Usuario" style="margin: 5px;">
+  </a>
+  <a href="https://github.com/AlexisJr2004/calculadora_matricial" target="_blank">
+    <img src="https://img.shields.io/badge/💻_Repositorio_GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="Repositorio GitHub" style="margin: 5px;">
+  </a>
+</div>
+
 ## 📋 Descripción
 
 **SCIENCE CALC** es una potente calculadora científica desarrollada en Python que ofrece:
@@ -20,15 +32,16 @@ Con una interfaz intuitiva y capacidades de visualización, es ideal para aplica
 
 ## 🚀 Instalación
 
-### Opción 1: Instalador ejecutable (Windows)
-Descarga el instalador desde:
-<p align="center">
-  <a href="https://drive.google.com/drive/folders/19wBxe_--0iD4wVQFVGS0qkgQbykX_vxg?usp=sharing" target="_blank">
-    <img src="https://img.shields.io/badge/Descargar_Instalador-4285F4?style=for-the-badge&logo=google-drive&logoColor=white" alt="Descargar Instalador">
-  </a>
-</p>
+### 🔹 Opción 1: Instalador ejecutable (Windows)
+Descarga el instalador auto-ejecutable para una instalación sencilla:
 
-### Opción 2: Instalación desde código fuente
+<div align="center">
+  <a href="https://drive.google.com/drive/folders/19wBxe_--0iD4wVQFVGS0qkgQbykX_vxg?usp=sharing" target="_blank">
+    <img src="https://img.shields.io/badge/⬇️_Descargar_Instalador-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Descargar Instalador">
+  </a>
+</div>
+
+### 🔹 Opción 2: Instalación desde código fuente
 
 #### Requisitos
 - Python 3.8+
@@ -53,6 +66,16 @@ Abre tu navegador en:
 http://localhost:5000
 ```
 
+## 📚 Documentación
+
+Descarga el manual completo de usuario:
+
+<div align="center">
+  <a href="https://drive.google.com/file/d/1JtDPghcKvO6z_McZFq1nti6WILJKssh8/view?usp=sharing" target="_blank">
+    <img src="https://img.shields.io/badge/📘_Manual_de_Usuario-FF6D01?style=for-the-badge&logo=bookstack&logoColor=white" alt="Manual de Usuario">
+  </a>
+</div>
+
 ## 📊 Características Principales
 
 | Módulo | Operaciones Disponibles |
@@ -76,14 +99,14 @@ plotly==5.24.1     # Visualización gráfica
 
 Si encuentras algún problema o tienes sugerencias:
 
-- Abre un [issue en GitHub](https://github.com/AlexisJr2004/calculadora_matricial/issues)
-- Contacto directo: [snietod@unemi.edu.ec](mailto:snietod@unemi.edu.ec)
-
-<p align="center">
-  <a href="https://github.com/AlexisJr2004/calculadora_matricial">
-    <img src="https://img.shields.io/badge/Visitar_Repositorio-181717?style=for-the-badge&logo=github&logoColor=white" alt="Repositorio GitHub">
+<div align="center">
+  <a href="https://github.com/AlexisJr2004/calculadora_matricial/issues" target="_blank">
+    <img src="https://img.shields.io/badge/📌_Reportar_Issue-181717?style=for-the-badge&logo=github&logoColor=white" alt="Reportar Issue">
   </a>
-</p>
+  <a href="mailto:snietod@unemi.edu.ec">
+    <img src="https://img.shields.io/badge/✉️_Contacto-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Contacto">
+  </a>
+</div>
 
 ---
 
