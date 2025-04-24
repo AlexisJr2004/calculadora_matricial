@@ -24,7 +24,7 @@
 // 1. 🖥️ GESTIÓN DE INTERFAZ
 // =============================================
 
-// Botón para mostrar ayuda del uso d ela calculadora
+// Botón para mostrar ayuda del uso de la calculadora
 function mostrarAyuda() {
     Swal.fire({
         title: '¿Cómo usar esta calculadora?',
@@ -165,18 +165,31 @@ function getMatrixValues(matrixId) {
 }
 
 /**
- * Llamado para la resolución de las operancions
+ * Llamado para la resolución de las operaciones
  * 'add', 'subtract', 'multiply', etc.
  */
 async function matrixOperation(operation) {
     try {
         const matrixA = getMatrixValues("matrixA");
         let requestData = { operation, matrixA };
-
+        
+        // Determinar qué matriz usar para operaciones individuales
+        let selectedMatrix = 'A';
+        if (['inverse', 'transpose', 'trace', 'determinant', 'rank'].includes(operation)) {
+            selectedMatrix = document.querySelector('input[name="selectedMatrix"]:checked').value;
+        }
+        
         // Operaciones que requieren matrixB
         if (['add', 'subtract', 'multiply'].includes(operation)) {
             requestData.matrixB = getMatrixValues("matrixB");
+        } else {
+            // Para operaciones individuales, enviar la matriz seleccionada
+            if (selectedMatrix === 'B') {
+                requestData.matrixB = getMatrixValues("matrixB");
+            }
         }
+        
+        requestData.selectedMatrix = selectedMatrix;
 
         // Mostrar carga
         displayMatrixResult("Calculando...", "loading");
@@ -262,89 +275,114 @@ function displayMatrixResult(result, type) {
 // =============================================
 
 /**
+ * Limpia un campo de polinomio
+ */
+function clearPolynomial(fieldId) {
+    document.getElementById(fieldId).value = "";
+}
+
+/**
  * Realiza una operación con polinomios
  * {string} operation - Tipo de operación ('add', 'subtract', 'multiply', etc.)
  */
-function polynomialOperation(operation) {
-    const poly1 = document.getElementById("poly1").value;
-    let poly2 = null;
+async function polynomialOperation(operation) {
+    try {
+        // Determinar qué polinomio usar para operaciones individuales
+        let selectedPoly = document.querySelector('input[name="selectedPolynomial"]:checked').value;
+        
+        const poly1 = document.getElementById("poly1").value;
+        const poly2 = document.getElementById("poly2").value;
+        
+        let requestData = {
+            operation: operation,
+            poly1: selectedPoly === "1" ? poly1 : poly2
+        };
 
-    if (operation !== "derivative" && operation !== "integral" && operation !== "roots") {
-        poly2 = document.getElementById("poly2").value;
-        if (!poly2) {
-            document.getElementById("polynomial-result").innerHTML = 
-                '<p class="text-center text-red-500 py-4">Error: Se necesita el segundo polinomio para esta operación</p>';
-            return;
+        // Operaciones que requieren ambos polinomios
+        if (['add', 'subtract', 'multiply'].includes(operation)) {
+            if (!poly1 || !poly2) {
+                displayPolynomialResult("Error: Se necesitan ambos polinomios para esta operación", "error");
+                return;
+            }
+            requestData.poly1 = poly1;
+            requestData.poly2 = poly2;
+        } else {
+            // Para operaciones individuales, verificar que el polinomio seleccionado exista
+            if ((selectedPoly === "1" && !poly1) || (selectedPoly === "2" && !poly2)) {
+                displayPolynomialResult(`Error: El polinomio ${selectedPoly} está vacío`, "error");
+                return;
+            }
         }
-    }
 
-    if (!poly1) {
-        document.getElementById("polynomial-result").innerHTML = 
-            '<p class="text-center text-red-500 py-4">Error: Se necesita al menos un polinomio</p>';
+        // Mostrar carga
+        displayPolynomialResult("Calculando...", "loading");
+
+        // Enviar al backend
+        const response = await fetch('/polynomial_operation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestData)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            displayPolynomialResult(data, "success");
+        } else {
+            displayPolynomialResult(`Error: ${data.error}`, "error");
+        }
+
+    } catch (error) {
+        displayPolynomialResult(`Error: ${error.message}`, "error");
+    }
+}
+
+/**
+ * Muestra el resultado de una operación polinómica
+ */
+function displayPolynomialResult(data, type) {
+    const resultDiv = document.getElementById("polynomial-result");
+    
+    if (type === "loading") {
+        resultDiv.innerHTML = `<div class="text-center p-4">⏳ ${data}</div>`;
         return;
     }
 
-    const resultDiv = document.getElementById("polynomial-result");
-    resultDiv.innerHTML = '<p class="text-center py-4">Calculando...</p>';
-
-    // Preparar datos para la solicitud
-    const requestData = {
-        operation: operation,
-        poly1: poly1
-    };
-
-    if (poly2) {
-        requestData.poly2 = poly2;
+    if (type === "error") {
+        resultDiv.innerHTML = `
+            <div class="text-center p-4 text-red-500">
+                <p class="font-bold">Error</p>
+                <p>${data}</p>
+            </div>
+        `;
+        return;
     }
 
-    // Hacer la llamada API
-    fetch('/polynomial_operation', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Renderizar el resultado con MathJax
-            resultDiv.innerHTML = `
-                <div class="p-4">
-                    <div class="font-bold mb-2 text-lg text-center">${getOperationName(operation)}</div>
-                    <div class="text-center text-gray-600 mb-4">
-                        ${data.details ? `$$${data.details}$$` : ''}
-                    </div>
-                    <div class="text-center text-2xl my-4">
-                        Resultado: $$${data.result}$$
-                    </div>
-                </div>
-            `;
-            // Decirle a MathJax que renderice el nuevo LaTeX
-            if (typeof MathJax !== 'undefined') {
-                MathJax.typeset();
-            }
-        } else {
-            resultDiv.innerHTML = `
-                <p class="text-center text-red-500 py-4">
-                    Error en ${getOperationName(operation)}: ${data.error}
-                </p>
-            `;
-        }
-    })
-    .catch(error => {
+    if (type === "success") {
         resultDiv.innerHTML = `
-            <p class="text-center text-red-500 py-4">
-                Error de conexión: ${error.message}
-            </p>
+            <div class="p-4">
+                <div class="font-bold mb-2 text-lg text-center text-indigo-600">
+                    ${getOperationName(data.operation)}
+                </div>
+                ${data.details ? `
+                <div class="text-center text-gray-600 mb-4 border-b pb-3">
+                    Operación: $$${data.details}$$
+                </div>` : ''}
+                <div class="text-center text-2xl my-4 p-4 bg-white rounded-lg shadow-inner">
+                    Resultado: $$${data.result}$$
+                </div>
+            </div>
         `;
-    });
+        
+        // Renderizar LaTeX con MathJax
+        if (typeof MathJax !== 'undefined') {
+            MathJax.typeset();
+        }
+    }
 }
 
 /**
  * Obtiene el nombre legible de una operación
- * {string} operation - Identificador de la operación
- * returns {string} Nombre legible
  */
 function getOperationName(operation) {
     const names = {
@@ -363,88 +401,143 @@ function getOperationName(operation) {
 // =============================================
 
 /**
+ * Limpia un campo de vector
+ */
+function clearVector(fieldId) {
+    document.getElementById(fieldId).value = "";
+}
+
+/**
  * Realiza una operación vectorial
- * {string} operation - Tipo de operación ('add', 'subtract', 'dot', 'cross', etc.)
  */
 async function vectorOperation(operation) {
-    const vector1Input = document.getElementById("vector1").value;
-    let vector2Input = "";
-    
-    if (operation !== "magnitude" && operation !== "normalize") {
-        vector2Input = document.getElementById("vector2").value;
-        if (!vector2Input) {
-            document.getElementById("vector-result").innerHTML = 
-                '<p class="text-center text-red-500 py-4">Error: Necesitas ingresar el segundo vector</p>';
-            return;
-        }
-    }
+    try {
+        // Determinar qué vector usar para operaciones individuales
+        let selectedVector = document.querySelector('input[name="selectedVector"]:checked').value;
+        
+        const vector1 = document.getElementById("vector1").value;
+        const vector2 = document.getElementById("vector2").value;
+        
+        let requestData = {
+            operation: operation,
+            vector1: selectedVector === "1" ? vector1 : vector2
+        };
 
-    if (!vector1Input) {
-        document.getElementById("vector-result").innerHTML = 
-            '<p class="text-center text-red-500 py-4">Error: Necesitas ingresar al menos el primer vector</p>';
+        // Operaciones que requieren dos vectores
+        if (['add', 'subtract', 'dot', 'cross', 'angle', 'projection'].includes(operation)) {
+            if (!vector1 || !vector2) {
+                displayVectorResult("Error: Se necesitan ambos vectores para esta operación", "error");
+                return;
+            }
+            requestData.vector1 = vector1;
+            requestData.vector2 = vector2;
+        } else {
+            // Para operaciones individuales, verificar que el vector seleccionado exista
+            if ((selectedVector === "1" && !vector1) || (selectedVector === "2" && !vector2)) {
+                displayVectorResult(`Error: El vector ${selectedVector} está vacío`, "error");
+                return;
+            }
+        }
+
+        // Mostrar carga
+        displayVectorResult("Calculando...", "loading");
+
+        // Enviar al backend
+        const response = await fetch('/vector_operation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestData)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            displayVectorResult(data, "success");
+        } else {
+            displayVectorResult(`Error: ${data.error}`, "error");
+        }
+
+    } catch (error) {
+        displayVectorResult(`Error: ${error.message}`, "error");
+    }
+}
+
+/**
+ * Muestra el resultado de una operación vectorial
+ */
+function displayVectorResult(data, type) {
+    const resultDiv = document.getElementById("vector-result");
+    
+    if (type === "loading") {
+        resultDiv.innerHTML = `<div class="text-center p-4">⏳ ${data}</div>`;
         return;
     }
 
-    const resultDiv = document.getElementById("vector-result");
-    resultDiv.innerHTML = '<p class="text-center py-4">Calculando...</p>';
-
-    try {
-        const data = {
-            operation: operation,
-            vector1: vector1Input
-        };
-
-        if (operation !== "magnitude" && operation !== "normalize") {
-            data.vector2 = vector2Input;
-        }
-
-        const response = await fetch('/vector_operation', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        });
-
-        const resultData = await response.json();
-
-        if (resultData.success) {
-            let resultContent;
-            if (Array.isArray(resultData.result)) {
-                resultContent = `
-                    <div class="text-left">
-                        <p class="font-bold mb-2 text-blue-600">Operación: ${operation}</p>
-                        <div class="my-3 p-3 bg-gray-100 rounded-lg">
-                            <p class="text-lg font-semibold text-gray-800 mb-1">Resultado:</p>
-                            <div class="math-result">\\(${resultData.latex_result}\\)</div>
-                        </div>
-                        <p class="text-sm text-gray-600 mt-1">Forma vectorial: [${resultData.result.join(', ')}]</p>
-                    </div>
-                `;
-            } else {
-                resultContent = `
-                    <div class="text-left">
-                        <p class="font-bold mb-2 text-blue-600">Operación: ${operation}</p>
-                        <div class="my-3 p-3 bg-gray-100 rounded-lg">
-                            <p class="text-lg font-semibold text-gray-800 mb-1">Resultado:</p>
-                            <div class="math-result">\\(${resultData.latex_result}\\)</div>
-                        </div>
-                        <p class="text-sm text-gray-600 mt-1">Valor: ${resultData.result}</p>
-                    </div>
-                `;
-            }
-            resultDiv.innerHTML = resultContent;
-            
-            // Renderizar LaTeX
-            if (typeof MathJax !== 'undefined') {
-                MathJax.typesetPromise().catch(err => console.log('MathJax error:', err));
-            }
-        } else {
-            resultDiv.innerHTML = `<p class="text-center text-red-500 py-4">Error: ${resultData.error}</p>`;
-        }
-    } catch (error) {
-        resultDiv.innerHTML = `<p class="text-center text-red-500 py-4">Error de conexión: ${error.message}</p>`;
+    if (type === "error") {
+        resultDiv.innerHTML = `
+            <div class="text-center p-4 text-red-500">
+                <p class="font-bold">Error</p>
+                <p>${data}</p>
+            </div>
+        `;
+        return;
     }
+
+    if (type === "success") {
+        let resultContent = `
+            <div class="p-4">
+                <div class="font-bold mb-2 text-lg text-center text-indigo-600">
+                    ${getVectorOperationName(data.operation)}
+                </div>
+        `;
+
+        if (Array.isArray(data.result)) {
+            resultContent += `
+                <div class="text-center my-4">
+                    <div class="math-result text-xl mb-2">$$${data.latex_result}$$</div>
+                    <div class="mt-3 p-3 bg-white rounded-lg shadow-inner border border-gray-200">
+                        <p class="text-sm font-medium text-gray-600 mb-1">Forma vectorial:</p>
+                        <p class="font-mono text-lg">[${data.result.join(', ')}]</p>
+                    </div>
+                </div>
+            `;
+        } else {
+            resultContent += `
+                <div class="text-center my-4">
+                    <div class="math-result text-xl mb-3">$$${data.latex_result}$$</div>
+                    <div class="mt-3 p-3 bg-white rounded-lg shadow-inner border border-gray-200">
+                        <p class="text-sm font-medium text-gray-600 mb-1">Resultado:</p>
+                        <p class="text-2xl font-bold">${data.result}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        resultContent += `</div>`;
+        resultDiv.innerHTML = resultContent;
+        
+        // Renderizar LaTeX con MathJax
+        if (typeof MathJax !== 'undefined') {
+            MathJax.typeset();
+        }
+    }
+}
+
+/**
+ * Obtiene el nombre legible de una operación vectorial
+ */
+function getVectorOperationName(operation) {
+    const names = {
+        'add': 'Suma de Vectores',
+        'subtract': 'Resta de Vectores',
+        'dot': 'Producto Punto',
+        'cross': 'Producto Cruz',
+        'magnitude': 'Magnitud del Vector',
+        'angle': 'Ángulo entre Vectores',
+        'normalize': 'Vector Normalizado',
+        'projection': 'Proyección Vectorial'
+    };
+    return names[operation] || operation;
 }
 
 // =============================================
@@ -621,8 +714,17 @@ document.getElementById('graph-type').addEventListener('change', function() {
 // =============================================
 
 /**
+ * Limpia el campo de función
+ */
+function clearCalculusFunction() {
+    document.getElementById("calculus-function").value = "";
+    document.getElementById("limit-point").value = "";
+    document.getElementById("taylor-point").value = "";
+    document.getElementById("taylor-degree").value = "";
+}
+
+/**
  * Muestra las opciones específicas para cada operación de cálculo
- * {string} operation - Tipo de operación ('derivative', 'integral', 'limit', etc.)
  */
 function showCalculusOptions(operation) {
     document.getElementById("limit-point-container").classList.add("hidden");
@@ -636,19 +738,18 @@ function showCalculusOptions(operation) {
 }
 
 /**
- * Realiza una operación de cálculo (derivada, integral, límite, etc.)
- * {string} operation - Tipo de operación
+ * Realiza una operación de cálculo
  */
-function calculusOperation(operation) {
+async function calculusOperation(operation) {
     const func = document.getElementById("calculus-function").value;
     const resultDiv = document.getElementById("calculus-result");
     
     if (!func) {
-        resultDiv.innerHTML = '<p class="text-center text-red-500 py-4">Error: Por favor ingresa una función</p>';
+        displayCalculusResult("Error: Por favor ingresa una función", "error");
         return;
     }
 
-    resultDiv.innerHTML = '<p class="text-center py-4">Calculando...</p>';
+    displayCalculusResult("Calculando...", "loading");
     
     const data = {
         operation: operation,
@@ -657,50 +758,331 @@ function calculusOperation(operation) {
     
     // Agregar parámetros adicionales según la operación
     if (operation === "limit") {
-        data.point = document.getElementById("limit-point").value;
+        const point = document.getElementById("limit-point").value;
+        if (!point) {
+            displayCalculusResult("Error: Ingresa un punto para el límite", "error");
+            return;
+        }
+        data.point = point;
     } else if (operation === "taylor") {
-        data.point = document.getElementById("taylor-point").value;
-        data.degree = document.getElementById("taylor-degree").value;
+        const point = document.getElementById("taylor-point").value;
+        const degree = document.getElementById("taylor-degree").value;
+        if (!point || !degree) {
+            displayCalculusResult("Error: Completa todos los campos para Taylor", "error");
+            return;
+        }
+        data.point = point;
+        data.degree = degree;
     }
     
-    // Enviar la solicitud al backend
-    fetch('/calculus_operation', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            resultDiv.innerHTML = `
-                <div class="text-left">
-                    <p class="font-bold mb-2 text-blue-600">Operación: ${operation}</p>
-                    <p class="mb-1 text-gray-800">Función: ${func}</p>
-                    <div class="my-3 p-3 bg-gray-100 rounded-lg">
-                        <p class="text-lg font-semibold text-gray-800 mb-1">Resultado:</p>
-                        <div class="math-result">\\(${data.result}\\)</div>
-                    </div>
-                    ${data.details ? `
-                    <div class="mt-2 p-2 bg-gray-50 rounded">
-                        <p class="text-sm font-medium text-gray-600 mb-1">Proceso:</p>
-                        <div class="math-details">\\(${data.details}\\)</div>
-                    </div>
-                    ` : ''}
+    try {
+        const response = await fetch('/calculus_operation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        const resultData = await response.json();
+
+        if (resultData.success) {
+            displayCalculusResult(resultData, "success");
+        } else {
+            displayCalculusResult(`Error: ${resultData.error}`, "error");
+        }
+    } catch (error) {
+        displayCalculusResult(`Error de conexión: ${error.message}`, "error");
+    }
+}
+
+/**
+ * Muestra el resultado de una operación de cálculo
+ */
+function displayCalculusResult(data, type) {
+    const resultDiv = document.getElementById("calculus-result");
+    
+    if (type === "loading") {
+        resultDiv.innerHTML = `<div class="text-center p-4">⏳ ${data}</div>`;
+        return;
+    }
+
+    if (type === "error") {
+        resultDiv.innerHTML = `
+            <div class="text-center p-4 text-red-500">
+                <p class="font-bold">Error</p>
+                <p>${data}</p>
+            </div>
+        `;
+        return;
+    }
+
+    if (type === "success") {
+        let resultContent = `
+            <div class="p-4">
+                <div class="font-bold mb-2 text-lg text-center text-indigo-600">
+                    ${getCalculusOperationName(data.operation)}
+                </div>
+                <div class="text-center text-gray-600 mb-4 border-b pb-3">
+                    Función: $$${data.function_latex || data.function}$$
+                </div>
+                <div class="text-center text-2xl my-4 p-4 bg-white rounded-lg shadow-inner">
+                    Resultado: $$${data.result}$$
+                </div>
+        `;
+
+        if (data.details) {
+            resultContent += `
+                <div class="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                    <p class="text-sm font-medium text-gray-600 mb-2">Proceso:</p>
+                    <div class="math-details">$$${data.details}$$</div>
                 </div>
             `;
-            
-            if (typeof MathJax !== 'undefined') {
-                MathJax.typesetPromise(['.math-result', '.math-details'])
-                    .catch(err => console.log('MathJax error:', err));
-            }
         }
-    })
-    .catch(error => {
-        resultDiv.innerHTML = `<p class="text-center text-red-500 py-4">Error de conexión: ${error.message}</p>`;
+
+        resultContent += `</div>`;
+        resultDiv.innerHTML = resultContent;
+        
+        // Renderizar LaTeX con MathJax
+        if (typeof MathJax !== 'undefined') {
+            MathJax.typeset();
+        }
+    }
+}
+
+/**
+ * Obtiene el nombre legible de una operación de cálculo
+ */
+function getCalculusOperationName(operation) {
+    const names = {
+        'derivative': 'Derivada',
+        'integral': 'Integral',
+        'limit': 'Límite',
+        'taylor': 'Serie de Taylor'
+    };
+    return names[operation] || operation;
+}
+
+// =============================================
+// 7. ∞ OPERACIONES CON ECUACIONES DIFERENCIALES
+// =============================================
+
+/**
+ * Limpia todos los inputs de ecuaciones diferenciales
+ */
+function clearDifferentialInputs() {
+    document.getElementById("diff-eq").value = "";
+    document.getElementById("initial-x").value = "";
+    document.getElementById("initial-y").value = "";
+    document.getElementById("step-size").value = "";
+    document.getElementById("num-points").value = "";
+    document.getElementById("differential-result").innerHTML = `
+        <div class="text-center py-8 text-gray-500">
+            <i class="fas fa-infinity text-3xl mb-2"></i>
+            <p>Los resultados aparecerán aquí</p>
+        </div>
+    `;
+    document.getElementById("graph-container").classList.add("hidden");
+}
+
+/**
+ * Muestra/oculta opciones según el tipo de solución seleccionado
+ */
+function showDifferentialOptions() {
+    const solutionType = document.querySelector('input[name="solutionType"]:checked').value;
+    document.getElementById("numerical-options-container").classList.add("hidden");
+    document.getElementById("method-selector-container").classList.add("hidden");
+    document.getElementById("analytical-solve-container").classList.add("hidden");
+    
+    if (solutionType === "numerical") {
+        document.getElementById("numerical-options-container").classList.remove("hidden");
+        document.getElementById("method-selector-container").classList.remove("hidden");
+    } else {
+        document.getElementById("analytical-solve-container").classList.remove("hidden");
+    }
+}
+
+/**
+ * Resuelve una ecuación diferencial
+ */
+async function solveDifferentialEquation(method) {
+    const equation = document.getElementById("diff-eq").value;
+    const initialX = document.getElementById("initial-x").value;
+    const initialY = document.getElementById("initial-y").value;
+    const resultDiv = document.getElementById("differential-result");
+    
+    // Validaciones básicas
+    if (!equation || !initialX || !initialY) {
+        displayDifferentialResult("Error: Todos los campos son requeridos", "error");
+        return;
+    }
+
+    // Mostrar estado de carga
+    displayDifferentialResult("Resolviendo ecuación diferencial...", "loading");
+    
+    // Preparar datos
+    const data = {
+        method: method,
+        equation: equation,
+        initial_x: initialX,
+        initial_y: initialY
+    };
+    
+    // Agregar parámetros numéricos si es necesario
+    if (method !== 'analytical') {
+        data.step_size = document.getElementById("step-size").value || "0.1";
+        data.num_points = document.getElementById("num-points").value || "10";
+    }
+    
+    try {
+        const response = await fetch('/differential_operation', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(result.error || "Error en el servidor");
+        }
+
+        if (result.success) {
+            displayDifferentialResult(result, "success");
+            
+            // Mostrar gráfica si existe
+            if (result.graph_data) {
+                renderDifferentialGraph(result.graph_data);
+            }
+        } else {
+            displayDifferentialResult(`Error: ${result.error}`, "error");
+        }
+    } catch (error) {
+        displayDifferentialResult(`Error: ${error.message}`, "error");
+    }
+}
+
+function displayDifferentialResult(data, type) {
+    const resultDiv = document.getElementById("differential-result");
+    
+    if (type === "loading") {
+        resultDiv.innerHTML = `<div class="text-center p-4">⏳ ${data}</div>`;
+        return;
+    }
+
+    if (type === "error") {
+        resultDiv.innerHTML = `
+            <div class="text-center p-4 text-red-500">
+                <p class="font-bold">Error</p>
+                <p>${data}</p>
+            </div>
+        `;
+        return;
+    }
+
+    if (type === "success") {
+        let resultHTML = `
+            <div class="p-4">
+                <h4 class="text-lg font-bold text-indigo-600 mb-2">
+                    ${data.method === 'analytical' ? 'Solución Analítica' : 'Solución Numérica'}
+                </h4>
+                <div class="mb-4 p-3 bg-gray-100 rounded">
+                    <p class="text-sm text-gray-600 mb-1">Ecuación:</p>
+                    <div class="math-tex">$$${data.equation_latex}$$</div>
+                </div>
+        `;
+
+        if (data.method === 'analytical') {
+            resultHTML += `
+                <div class="mb-4 p-3 bg-white rounded border">
+                    <p class="text-sm text-gray-600 mb-1">Solución:</p>
+                    <div class="math-tex text-xl">$$${data.solution}$$</div>
+                </div>
+            `;
+        } else {
+            // Mostrar tabla para métodos numéricos
+            resultHTML += `
+                <div class="mb-4">
+                    <p class="text-sm text-gray-600 mb-2">Resultados numéricos:</p>
+                    <div class="overflow-x-auto max-h-60">
+                        <table class="min-w-full border">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-2 border">Paso</th>
+                                    <th class="px-4 py-2 border">x</th>
+                                    <th class="px-4 py-2 border">y(x)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+            `;
+            
+            data.solution.forEach((point, index) => {
+                resultHTML += `
+                    <tr class="${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}">
+                        <td class="px-4 py-2 border text-center">${index}</td>
+                        <td class="px-4 py-2 border text-center">${point.x.toFixed(4)}</td>
+                        <td class="px-4 py-2 border text-center">${point.y.toFixed(4)}</td>
+                    </tr>
+                `;
+            });
+            
+            resultHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        resultHTML += `</div>`;
+        resultDiv.innerHTML = resultHTML;
+        
+        // Renderizar LaTeX
+        if (typeof MathJax !== 'undefined') {
+            MathJax.typesetPromise();
+        }
+    }
+}
+
+function renderDifferentialGraph(graphData) {
+    const graphContainer = document.getElementById("graph-container");
+    const graphElement = document.getElementById("diff-eq-graph");
+    
+    graphContainer.classList.remove("hidden");
+    graphElement.innerHTML = "";
+    
+    // Usar Plotly o tu librería de gráficos preferida
+    Plotly.newPlot(graphElement, [{
+        x: graphData.x_values,
+        y: graphData.y_values,
+        type: 'scatter',
+        mode: 'lines+markers',
+        name: 'Solución'
+    }], {
+        title: 'Solución Numérica',
+        xaxis: { title: 'x' },
+        yaxis: { title: 'y(x)' }
     });
 }
+
+/**
+ * Obtiene el nombre legible del método de solución
+ */
+function getDifferentialMethodName(method) {
+    const names = {
+        'analytical': 'Solución Analítica',
+        'euler': 'Método de Euler',
+        'improved_euler': 'Método de Euler Mejorado',
+        'runge_kutta': 'Método de Runge-Kutta'
+    };
+    return names[method] || method;
+}
+
+// Event listeners para el selector de tipo de solución
+document.querySelectorAll('input[name="solutionType"]').forEach(radio => {
+    radio.addEventListener('change', showDifferentialOptions);
+});
 
 // Configurar event listeners para los botones de cálculo
 document.querySelectorAll('.operation-btn').forEach(btn => {

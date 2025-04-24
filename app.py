@@ -26,8 +26,12 @@ def matrix_operation():
     operation = data['operation']
     matrix_a = np.array(data['matrixA'])
     matrix_b = np.array(data['matrixB']) if 'matrixB' in data else None
+    selected_matrix = data.get('selectedMatrix', 'A')  # 'A' o 'B' por defecto
     
     try:
+        # Determinar qué matriz usar para operaciones individuales
+        matrix = matrix_a if selected_matrix == 'A' else matrix_b
+        
         # Validaciones comunes
         if operation in ['add', 'subtract']:
             if matrix_a.shape != matrix_b.shape:
@@ -37,9 +41,14 @@ def matrix_operation():
             if matrix_a.shape[1] != matrix_b.shape[0]:
                 raise ValueError("El número de columnas de A debe coincidir con filas de B")
         
-        if operation in ['determinant', 'inverse', 'trace']:
-            if matrix_a.shape[0] != matrix_a.shape[1]:
+        if operation in ['determinant', 'inverse', 'trace', 'rank']:
+            if matrix.shape[0] != matrix.shape[1]:
                 raise ValueError("La matriz debe ser cuadrada")
+                
+        if operation == 'inverse':
+            det = np.linalg.det(matrix)
+            if abs(det) < 1e-10:  # Tolerancia para valores cercanos a cero
+                raise ValueError("La matriz es singular (determinante = 0), no tiene inversa")
 
         # Operaciones
         if operation == 'add':
@@ -49,31 +58,31 @@ def matrix_operation():
         elif operation == 'multiply':
             result = np.dot(matrix_a, matrix_b).tolist()
         elif operation == 'determinant':
-            result = float(np.linalg.det(matrix_a))
+            result = float(np.linalg.det(matrix))
         elif operation == 'inverse':
-            result = np.linalg.inv(matrix_a).tolist()
+            result = np.linalg.inv(matrix).tolist()
         elif operation == 'transpose':
-            result = matrix_a.T.tolist()
+            result = matrix.T.tolist()
         elif operation == 'trace':
-            result = float(np.trace(matrix_a))
+            result = float(np.trace(matrix))
         elif operation == 'rank':
-            result = int(np.linalg.matrix_rank(matrix_a))
+            result = int(np.linalg.matrix_rank(matrix))
         else:
             raise ValueError("Operación no soportada")
         
         return jsonify({
             'success': True,
             'result': result,
-            'details': f"Operación {operation} completada"
+            'details': f"Operación {operation} completada en matriz {selected_matrix}"
         })
         
     except Exception as e:
         return jsonify({
             'success': False,
             'error': str(e),
-            'details': "Error en operación matricial"
+            'details': f"Error en operación {operation} con matriz {selected_matrix}"
         })
-
+    
 # ********************************************
 # *         OPERACIONES CON POLINOMIOS       *
 # ********************************************
@@ -81,16 +90,25 @@ def matrix_operation():
 def polynomial_operation():
     data = request.json
     operation = data['operation']
-    poly1_str = data['poly1'].replace('^', '**')
+    poly1_str = data['poly1'].replace('^', '**') if 'poly1' in data else None
     poly2_str = data.get('poly2', '').replace('^', '**') if 'poly2' in data else None
     
     x = sp.symbols('x')
     
     try:
-        poly1 = parse_expr(poly1_str, transformations=transformations)
-        poly2 = parse_expr(poly2_str, transformations=transformations) if poly2_str else None  
+        # Validaciones básicas
+        if not poly1_str and operation not in ['add', 'subtract', 'multiply']:
+            raise ValueError("Se requiere al menos un polinomio")
+            
+        if operation in ['add', 'subtract', 'multiply'] and not poly2_str:
+            raise ValueError("Esta operación requiere dos polinomios")
+        
+        poly1 = parse_expr(poly1_str, transformations=transformations) if poly1_str else None
+        poly2 = parse_expr(poly2_str, transformations=transformations) if poly2_str else None
+        
         result = None
         details = ""
+        
         if operation == 'add':
             result = sp.expand(poly1 + poly2)
             details = f"({sp.latex(poly1)}) + ({sp.latex(poly2)})"
@@ -112,23 +130,25 @@ def polynomial_operation():
             roots = sp.roots(poly1, x)
             if roots:
                 result = sp.FiniteSet(*roots.keys())
-                details = f"Roots\\ of\\ {sp.latex(poly1)}"
+                details = f"Raíces\\ de\\ {sp.latex(poly1)}"
             else:
-                result = "No roots found"
-                details = f"Could not find roots for {sp.latex(poly1)}"    
+                result = "No\\ se\\ encontraron\\ raíces\\ reales"
+                details = f"Raíces\\ de\\ {sp.latex(poly1)}"
+        
         return jsonify({
             'success': True,
             'result': sp.latex(result) if result is not None else "",
             'details': details,
             'operation': operation
         })
+        
     except Exception as e:
         return jsonify({
             'success': False,
             'error': str(e),
             'operation': operation
         })
-
+    
 # ********************************************
 # *         OPERACIONES CON VECTORES         *
 # ********************************************
@@ -196,9 +216,23 @@ def vector_operation():
             
         elif operation == 'normalize':
             magnitude = math.sqrt(sum(x**2 for x in vector1))
+            if magnitude == 0:
+                raise ValueError("No se puede normalizar el vector cero")
             result = [x/magnitude for x in vector1]
             details = f"Vector normalizado"
             latex_result = "\\hat{" + sp.latex(sp.Matrix(vector1)) + "} = \\frac{" + sp.latex(sp.Matrix(vector1)) + "}{\\|" + sp.latex(sp.Matrix(vector1)) + "\\|} = " + sp.latex(sp.Matrix(result))
+            
+        elif operation == 'projection':
+            if len(vector1) != len(vector2):
+                raise ValueError("Los vectores deben tener la misma dimensión")
+            dot_product = sum(a * b for a, b in zip(vector1, vector2))
+            mag2_squared = sum(x**2 for x in vector2)
+            if mag2_squared == 0:
+                raise ValueError("No se puede proyectar sobre el vector cero")
+            scalar = dot_product / mag2_squared
+            result = [x * scalar for x in vector2]
+            details = f"Proyección de v1 sobre v2"
+            latex_result = "\\text{proj}_{" + sp.latex(sp.Matrix(vector2)) + "}" + sp.latex(sp.Matrix(vector1)) + " = \\left(\\frac{" + sp.latex(sp.Matrix(vector1)) + " \\cdot " + sp.latex(sp.Matrix(vector2)) + "}{\\|" + sp.latex(sp.Matrix(vector2)) + "\\|^2}\\right)" + sp.latex(sp.Matrix(vector2)) + " = " + sp.latex(sp.Matrix(result))
             
         return jsonify({
             'success': True,
@@ -317,19 +351,37 @@ def calculus_operation():
         func = parse_expr(func_str, transformations=transformations)
         result = None
         details = ""
+        function_latex = sp.latex(func, ln_notation=True)
         
         if operation == 'derivative':
             result = sp.diff(func, x)
-            details = f"\\frac{{d}}{{dx}}\\left({sp.latex(func, ln_notation=True)}\\right)"
+            details = f"\\frac{{d}}{{dx}}\\left({function_latex}\\right)"
         elif operation == 'integral':
             result = sp.integrate(func, x)
-            details = f"\\int \\left({sp.latex(func, ln_notation=True)}\\right) \\, dx"
+            details = f"\\int \\left({function_latex}\\right) \\, dx"
             if not result.has(sp.Integral):
                 result = sp.Add(result, sp.Symbol('C'), evaluate=False)
+        elif operation == 'limit':
+            point = data['point']
+            if point == 'oo':
+                point = sp.oo
+            elif point == '-oo':
+                point = -sp.oo
+            else:
+                point = float(point)
+            result = sp.limit(func, x, point)
+            details = f"\\lim_{{x \\to {sp.latex(point)}}} \\left({function_latex}\\right)"
+        elif operation == 'taylor':
+            point = float(data['point'])
+            degree = int(data['degree'])
+            result = sp.series(func, x, point, degree).removeO()
+            details = f"\\text{{Serie de Taylor alrededor de }} x={point} \\text{{ hasta grado }} {degree}"
+        
         return jsonify({
             'success': True,
             'result': sp.latex(result, ln_notation=True) if result is not None else "",
             'details': details,
+            'function_latex': function_latex,
             'operation': operation
         })
     except Exception as e:
@@ -339,5 +391,141 @@ def calculus_operation():
             'operation': operation
         })
 
+# ********************************************
+# *     ECUACIONES DIFERENCIALES             *
+# ********************************************
+@app.route('/differential_operation', methods=['POST'])
+def differential_operation():
+    data = request.get_json()  # Cambiamos a request.get_json() para mayor seguridad
+    if not data:
+        return jsonify({
+            'success': False,
+            'error': 'No se recibieron datos',
+            'method': 'unknown'
+        })
+    
+    try:
+        method = data.get('method')
+        if not method:
+            raise ValueError("Método no especificado")
+
+        # Parsear la ecuación diferencial
+        equation_str = data.get('equation', '').replace("y''", "Derivative(y, x, x)").replace("y'", "Derivative(y, x)")
+        equation_str = equation_str.replace("^", "**")
+        
+        # Definir símbolos
+        x = sp.symbols('x')
+        y = sp.Function('y')(x)
+        
+        # Crear diccionario local para parseo
+        local_dict = {
+            'y': y,
+            'Derivative': sp.Derivative,
+            'x': x,
+            'sp': sp
+        }
+        
+        # Parsear la ecuación
+        eq = parse_expr(equation_str, transformations=transformations, local_dict=local_dict)
+        
+        # Verificar si es ecuación diferencial
+        if not any(isinstance(arg, sp.Derivative) for arg in eq.atoms()):
+            raise ValueError("La ecuación debe contener derivadas (use y' o y'')")
+
+        # Obtener condiciones iniciales
+        initial_x = float(data.get('initial_x', 0))
+        initial_y = float(data.get('initial_y', 1))
+        
+        result = {}
+        equation_latex = sp.latex(eq)
+
+        if method == 'analytical':
+            # Solución analítica
+            derivatives = [arg for arg in eq.atoms() if isinstance(arg, sp.Derivative)]
+            order = max([d.derivative_count for d in derivatives]) if derivatives else 0
+            
+            if order == 2:
+                # Ecuación de segundo orden
+                ics = {
+                    y.subs(x, initial_x): initial_y,
+                    sp.Derivative(y, x).subs(x, initial_x): 0  # Valor por defecto para y'
+                }
+            else:
+                # Ecuación de primer orden
+                ics = {y.subs(x, initial_x): initial_y}
+            
+            solution = sp.dsolve(eq, y, ics=ics)
+            result = {
+                'solution': sp.latex(solution.rhs),
+                'equation_latex': equation_latex
+            }
+        else:
+            # Solución numérica
+            step_size = float(data.get('step_size', 0.1))
+            num_points = int(data.get('num_points', 10))
+            show_graph = data.get('show_graph', False)
+
+            # Resolver para y'
+            solved = sp.solve(eq, sp.Derivative(y, x))
+            if not solved:
+                raise ValueError("No se puede resolver la ecuación para y'")
+            
+            f = sp.lambdify((x, y), solved[0], 'numpy')
+            
+            # Preparar arrays
+            x_vals = np.zeros(num_points)
+            y_vals = np.zeros(num_points)
+            x_vals[0] = initial_x
+            y_vals[0] = initial_y
+            
+            # Métodos numéricos
+            if method == 'euler':
+                for i in range(1, num_points):
+                    x_vals[i] = x_vals[i-1] + step_size
+                    y_vals[i] = y_vals[i-1] + step_size * f(x_vals[i-1], y_vals[i-1])
+            elif method == 'improved_euler':
+                for i in range(1, num_points):
+                    x_vals[i] = x_vals[i-1] + step_size
+                    k1 = f(x_vals[i-1], y_vals[i-1])
+                    k2 = f(x_vals[i], y_vals[i-1] + step_size * k1)
+                    y_vals[i] = y_vals[i-1] + (step_size / 2) * (k1 + k2)
+            elif method == 'runge_kutta':
+                for i in range(1, num_points):
+                    x_vals[i] = x_vals[i-1] + step_size
+                    h = step_size
+                    k1 = f(x_vals[i-1], y_vals[i-1])
+                    k2 = f(x_vals[i-1] + h/2, y_vals[i-1] + (h/2)*k1)
+                    k3 = f(x_vals[i-1] + h/2, y_vals[i-1] + (h/2)*k2)
+                    k4 = f(x_vals[i-1] + h, y_vals[i-1] + h*k3)
+                    y_vals[i] = y_vals[i-1] + (h/6)*(k1 + 2*k2 + 2*k3 + k4)
+            else:
+                raise ValueError(f"Método numérico desconocido: {method}")
+            
+            # Preparar resultados
+            solution = [{'x': float(x), 'y': float(y)} for x, y in zip(x_vals, y_vals)]
+            result = {
+                'solution': solution,
+                'equation_latex': equation_latex
+            }
+            
+            if show_graph:
+                result['graph_data'] = {
+                    'x_values': [float(x) for x in x_vals],
+                    'y_values': [float(y) for y in y_vals]
+                }
+
+        return jsonify({
+            'success': True,
+            'method': method,
+            **result
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'method': method if 'method' in locals() else 'unknown'
+        })
+    
 if __name__ == '__main__':
     app.run(debug=True)
