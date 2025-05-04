@@ -743,6 +743,7 @@ function showCalculusOptions(operation) {
 async function calculusOperation(operation) {
     const func = document.getElementById("calculus-function").value;
     const resultDiv = document.getElementById("calculus-result");
+    const showSteps = document.getElementById("show-steps-checkbox").checked;
     
     if (!func) {
         displayCalculusResult("Error: Por favor ingresa una función", "error");
@@ -753,7 +754,8 @@ async function calculusOperation(operation) {
     
     const data = {
         operation: operation,
-        function: func
+        function: func,
+        show_steps: showSteps  // Enviar si el usuario quiere ver los pasos
     };
     
     // Agregar parámetros adicionales según la operación
@@ -829,22 +831,27 @@ function displayCalculusResult(data, type) {
                 </div>
         `;
 
-        if (data.details) {
+        if (data.steps && data.steps.length > 0) {
             resultContent += `
                 <div class="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                    <p class="text-sm font-medium text-gray-600 mb-2">Proceso:</p>
-                    <div class="math-details">$$${data.details}$$</div>
-                </div>
-            `;
+                    <p class="text-sm font-medium text-gray-600 mb-2">Proceso paso a paso:</p>
+                    <div class="space-y-3">`;
+            
+            data.steps.forEach((step, index) => {
+                resultContent += `
+                    <div class="step p-2 border-l-4 border-indigo-200 bg-white">
+                        <div class="font-medium text-gray-700">Paso ${index + 1}:</div>
+                        <div class="math-step ml-2">$$${step}$$</div>
+                    </div>`;
+            });
+            
+            resultContent += `</div></div>`;
         }
 
         resultContent += `</div>`;
         resultDiv.innerHTML = resultContent;
         
-        // Renderizar LaTeX con MathJax
-        if (typeof MathJax !== 'undefined') {
-            MathJax.typeset();
-        }
+        MathJax.typeset();
     }
 }
 
