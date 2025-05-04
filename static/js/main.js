@@ -1308,6 +1308,441 @@ function renderDifferentialGraph(graphData) {
         });
 }
 
+// =============================================
+// 7. 📊Modelos Matemáticos
+// =============================================
+
+// Mostrar/ocultar modelos
+function showModel(modelId) {
+    // Actualizar pestañas activas
+    document.querySelectorAll('.model-tab').forEach(tab => {
+        tab.classList.remove('active');
+        tab.classList.remove('bg-indigo-600', 'text-white');
+        tab.classList.add('bg-indigo-100', 'text-indigo-800');
+    });
+    
+    // Activar la pestaña seleccionada
+    const activeTab = document.querySelector(`.model-tab[onclick="showModel('${modelId}')"]`);
+    activeTab.classList.add('active');
+    activeTab.classList.remove('bg-indigo-100', 'text-indigo-800');
+    activeTab.classList.add('bg-indigo-600', 'text-white');
+    
+    // Mostrar/ocultar contenido
+    document.querySelectorAll('.model-content').forEach(content => {
+        content.classList.add('hidden');
+    });
+    document.getElementById(`${modelId}-model`).classList.remove('hidden');
+}
+
+// Modelo SIR de Propagación de Epidemias
+async function runEpidemicModel() {
+    try {
+        // Obtener parámetros del usuario (puedes crear inputs en tu HTML)
+        const population = parseFloat(document.getElementById('epidemic-population').value) || 1000;
+        const initialInfected = parseFloat(document.getElementById('epidemic-initial-infected').value) || 1;
+        const beta = parseFloat(document.getElementById('epidemic-beta').value) || 0.5;  // Tasa de contacto
+        const gamma = parseFloat(document.getElementById('epidemic-gamma').value) || 0.1; // Tasa de recuperación
+        const days = parseFloat(document.getElementById('epidemic-days').value) || 100;
+        
+        // Enviar al backend
+        const response = await fetch('/epidemic_model', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                population,
+                initialInfected,
+                beta,
+                gamma,
+                days
+            })
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            displayEpidemicResults(data);
+        } else {
+            throw new Error(data.error);
+        }
+    } catch (error) {
+        Swal.fire('Error', `Error al ejecutar el modelo: ${error.message}`, 'error');
+    }
+}
+
+function displayEpidemicResults(data) {
+    const resultDiv = document.getElementById('epidemic-result');
+    
+    // Tabla de resultados
+    let html = `
+        <div class="bg-white rounded-lg shadow-md p-4 mb-4">
+            <h3 class="text-lg font-bold mb-2">Resultados del Modelo SIR</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div class="bg-blue-50 p-3 rounded border border-blue-200">
+                    <p class="text-sm text-blue-600">Pico de infección</p>
+                    <p class="text-xl font-bold">Día ${data.peak.day}</p>
+                    <p class="text-sm">${data.peak.infected.toFixed(0)} infectados</p>
+                </div>
+                <div class="bg-green-50 p-3 rounded border border-green-200">
+                    <p class="text-sm text-green-600">Total recuperados</p>
+                    <p class="text-xl font-bold">${data.final.recovered.toFixed(0)}</p>
+                    <p class="text-sm">${((data.final.recovered/data.population)*100).toFixed(1)}% población</p>
+                </div>
+                <div class="bg-red-50 p-3 rounded border border-red-200">
+                    <p class="text-sm text-red-600">Máxima tasa de infección</p>
+                    <p class="text-xl font-bold">${(data.peak.rate*100).toFixed(1)}% por día</p>
+                </div>
+            </div>
+            
+            <div id="epidemic-chart" style="height: 400px;"></div>
+        </div>
+    `;
+    
+    resultDiv.innerHTML = html;
+    
+    // Gráfica
+    const trace1 = {
+        x: data.days,
+        y: data.susceptible,
+        name: 'Susceptibles',
+        line: {color: '#3b82f6'}
+    };
+    
+    const trace2 = {
+        x: data.days,
+        y: data.infected,
+        name: 'Infectados',
+        line: {color: '#ef4444'}
+    };
+    
+    const trace3 = {
+        x: data.days,
+        y: data.recovered,
+        name: 'Recuperados',
+        line: {color: '#10b981'}
+    };
+    
+    Plotly.newPlot('epidemic-chart', [trace1, trace2, trace3], {
+        title: 'Modelo SIR - Evolución de la Epidemia',
+        xaxis: {title: 'Días'},
+        yaxis: {title: 'Población'},
+        hovermode: 'x unified'
+    });
+}
+
+// Modelo de Dinámica de Fluidos: Ecuación de Bernoulli
+async function calculateBernoulli() {
+    try {
+        const pressure1 = parseFloat(document.getElementById('bernoulli-p1').value) || 101325; // Pa
+        const velocity1 = parseFloat(document.getElementById('bernoulli-v1').value) || 0;      // m/s
+        const height1 = parseFloat(document.getElementById('bernoulli-h1').value) || 0;        // m
+        const pressure2 = parseFloat(document.getElementById('bernoulli-p2').value) || null;
+        const velocity2 = parseFloat(document.getElementById('bernoulli-v2').value) || null;
+        const height2 = parseFloat(document.getElementById('bernoulli-h2').value) || 0;       // m
+        const density = parseFloat(document.getElementById('bernoulli-density').value) || 1000; // kg/m³ (agua)
+        
+        // Validar que solo falte una variable
+        const missing = [pressure2, velocity2].filter(x => x === null).length;
+        if (missing !== 1) {
+            throw new Error("Debes dejar exactamente un campo en blanco (presión 2 o velocidad 2) para calcular");
+        }
+        
+        const response = await fetch('/bernoulli', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                p1: pressure1,
+                v1: velocity1,
+                h1: height1,
+                p2: pressure2,
+                v2: velocity2,
+                h2: height2,
+                density
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            displayBernoulliResults(data);
+        } else {
+            throw new Error(data.error);
+        }
+    } catch (error) {
+        Swal.fire('Error', error.message, 'error');
+    }
+}
+
+function displayBernoulliResults(data) {
+    const resultDiv = document.getElementById('bernoulli-result');
+    
+    let html = `
+        <div class="bg-white rounded-lg shadow-md p-4">
+            <h3 class="text-lg font-bold mb-3">Resultados de la Ecuación de Bernoulli</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-blue-50 p-3 rounded border border-blue-200">
+                    <p class="text-sm text-blue-600">Punto 1</p>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <p class="text-xs">Presión</p>
+                            <p class="font-bold">${data.p1.toFixed(1)} Pa</p>
+                        </div>
+                        <div>
+                            <p class="text-xs">Velocidad</p>
+                            <p class="font-bold">${data.v1.toFixed(2)} m/s</p>
+                        </div>
+                        <div>
+                            <p class="text-xs">Altura</p>
+                            <p class="font-bold">${data.h1.toFixed(2)} m</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-green-50 p-3 rounded border border-green-200">
+                    <p class="text-sm text-green-600">Punto 2</p>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <p class="text-xs">Presión</p>
+                            <p class="font-bold">${data.p2.toFixed(1)} Pa</p>
+                        </div>
+                        <div>
+                            <p class="text-xs">Velocidad</p>
+                            <p class="font-bold">${data.v2.toFixed(2)} m/s</p>
+                        </div>
+                        <div>
+                            <p class="text-xs">Altura</p>
+                            <p class="font-bold">${data.h2.toFixed(2)} m</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gray-50 p-3 rounded border border-gray-200">
+                <p class="text-sm text-gray-600 mb-1">Ecuación aplicada:</p>
+                <div class="text-center">
+                    <p class="text-lg">$$P_1 + \\frac{1}{2}\\rho v_1^2 + \\rho g h_1 = P_2 + \\frac{1}{2}\\rho v_2^2 + \\rho g h_2$$</p>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <canvas id="bernoulli-chart" height="300"></canvas>
+            </div>
+        </div>
+    `;
+    
+    resultDiv.innerHTML = html;
+    
+    // Renderizar LaTeX
+    if (typeof MathJax !== 'undefined') {
+        MathJax.typeset();
+    }
+    
+    // Gráfica de presión vs velocidad
+    const ctx = document.getElementById('bernoulli-chart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Punto 1', 'Punto 2'],
+            datasets: [
+                {
+                    label: 'Presión (kPa)',
+                    data: [data.p1/1000, data.p2/1000],
+                    borderColor: '#3b82f6',
+                    backgroundColor: '#3b82f6',
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Velocidad (m/s)',
+                    data: [data.v1, data.v2],
+                    borderColor: '#ef4444',
+                    backgroundColor: '#ef4444',
+                    yAxisID: 'y1'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            scales: {
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: 'Presión (kPa)'
+                    }
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: 'Velocidad (m/s)'
+                    },
+                    grid: {
+                        drawOnChartArea: false
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Modelo de Interceptación de Trayectorias (Misiles)
+async function calculateInterception() {
+    try {
+        // Parámetros del objetivo
+        const targetX = parseFloat(document.getElementById('target-x').value) || 1000;  // m
+        const targetY = parseFloat(document.getElementById('target-y').value) || 1000;  // m
+        const targetVx = parseFloat(document.getElementById('target-vx').value) || 50;  // m/s
+        const targetVy = parseFloat(document.getElementById('target-vy').value) || 0;   // m/s
+        
+        // Parámetros del interceptor
+        const missileX = parseFloat(document.getElementById('missile-x').value) || 0;   // m
+        const missileY = parseFloat(document.getElementById('missile-y').value) || 0;   // m
+        const missileSpeed = parseFloat(document.getElementById('missile-speed').value) || 200;  // m/s
+        const navigationConstant = parseFloat(document.getElementById('missile-n').value) || 3;  // Constante de navegación
+        
+        const response = await fetch('/interception', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                target: { x: targetX, y: targetY, vx: targetVx, vy: targetVy },
+                missile: { x: missileX, y: missileY, speed: missileSpeed, N: navigationConstant }
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            displayInterceptionResults(data);
+        } else {
+            throw new Error(data.error);
+        }
+    } catch (error) {
+        Swal.fire('Error', error.message, 'error');
+    }
+}
+
+function displayInterceptionResults(data) {
+    const resultDiv = document.getElementById('interception-result');
+    
+    let html = `
+        <div class="bg-white rounded-lg shadow-md p-4">
+            <h3 class="text-lg font-bold mb-3">Resultados de Interceptación</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-blue-50 p-3 rounded border border-blue-200">
+                    <h4 class="font-semibold text-blue-700 mb-2">Objetivo</h4>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <p class="text-xs">Posición inicial</p>
+                            <p class="font-bold">(${data.target.x.toFixed(1)}, ${data.target.y.toFixed(1)}) m</p>
+                        </div>
+                        <div>
+                            <p class="text-xs">Velocidad</p>
+                            <p class="font-bold">(${data.target.vx.toFixed(1)}, ${data.target.vy.toFixed(1)}) m/s</p>
+                        </div>
+                        <div>
+                            <p class="text-xs">Tiempo de interceptación</p>
+                            <p class="font-bold">${data.time.toFixed(2)} s</p>
+                        </div>
+                        <div>
+                            <p class="text-xs">Posición final</p>
+                            <p class="font-bold">(${data.interception.x.toFixed(1)}, ${data.interception.y.toFixed(1)}) m</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-green-50 p-3 rounded border border-green-200">
+                    <h4 class="font-semibold text-green-700 mb-2">Interceptor</h4>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <p class="text-xs">Posición inicial</p>
+                            <p class="font-bold">(${data.missile.x.toFixed(1)}, ${data.missile.y.toFixed(1)}) m</p>
+                        </div>
+                        <div>
+                            <p class="text-xs">Velocidad</p>
+                            <p class="font-bold">${data.missile.speed.toFixed(1)} m/s</p>
+                        </div>
+                        <div>
+                            <p class="text-xs">Ángulo inicial</p>
+                            <p class="font-bold">${(data.initial_angle * 180/Math.PI).toFixed(1)}°</p>
+                        </div>
+                        <div>
+                            <p class="text-xs">Distancia recorrida</p>
+                            <p class="font-bold">${data.distance.toFixed(1)} m</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="interception-chart" style="height: 500px;"></div>
+            
+            <div class="mt-4 bg-gray-50 p-3 rounded border border-gray-200">
+                <h4 class="font-semibold text-gray-700 mb-2">Ecuaciones Clave</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div class="text-center p-2 bg-white rounded border border-gray-200">
+                        <p class="text-sm text-gray-600 mb-1">Línea de visión (LOS)</p>
+                        <p class="text-lg">$$\\lambda = \\arctan\\left(\\frac{y_{t} - y_{m}}{x_{t} - x_{m}}\\right)$$</p>
+                    </div>
+                    <div class="text-center p-2 bg-white rounded border border-gray-200">
+                        <p class="text-sm text-gray-600 mb-1">Tasa de giro</p>
+                        <p class="text-lg">$$a = N \\cdot V_{m} \\cdot \\dot{\\lambda}$$</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    resultDiv.innerHTML = html;
+    
+    // Renderizar LaTeX
+    if (typeof MathJax !== 'undefined') {
+        MathJax.typeset();
+    }
+    
+    // Gráfica de trayectorias
+    const targetTrace = {
+        x: data.target_path.x,
+        y: data.target_path.y,
+        name: 'Objetivo',
+        mode: 'lines',
+        line: {color: '#ef4444'}
+    };
+    
+    const missileTrace = {
+        x: data.missile_path.x,
+        y: data.missile_path.y,
+        name: 'Interceptor',
+        mode: 'lines',
+        line: {color: '#3b82f6'}
+    };
+    
+    const interceptionPoint = {
+        x: [data.interception.x],
+        y: [data.interception.y],
+        name: 'Punto de Interceptación',
+        mode: 'markers',
+        marker: {
+            color: '#10b981',
+            size: 10
+        }
+    };
+    
+    Plotly.newPlot('interception-chart', [targetTrace, missileTrace, interceptionPoint], {
+        title: 'Trayectorias de Interceptación',
+        xaxis: {title: 'Posición X (m)'},
+        yaxis: {title: 'Posición Y (m)'},
+        showlegend: true
+    });
+}
+
 // Event listeners para el selector de tipo de solución
 document.querySelectorAll('input[name="solutionType"]').forEach(radio => {
     radio.addEventListener('change', showDifferentialOptions);

@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, jsonify
 import numpy as np
 import sympy as sp
 from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
+from scipy.integrate import odeint
 
 from sympy import symbols, parse_expr, log, latex
 
@@ -684,6 +685,246 @@ def differential_operation():
             'show_graph': data.get('show_graph', False),
             'graph_data': None
         }), 500
+
+# ******************************************************
+# *     MODELO DE SIR - PROPAGACIÓN DE EPIDEMIAS       *
+# ******************************************************
+@app.route('/epidemic_model', methods=['POST'])
+def epidemic_model():
+    data = request.json
+    
+    try:
+        # Parámetros del modelo
+        N = float(data['population'])  # Población total
+        I0 = float(data['initialInfected'])  # Infectados iniciales
+        beta = float(data['beta'])  # Tasa de contacto efectivo
+        gamma = float(data['gamma'])  # Tasa de recuperación
+        days = int(data['days'])
+        
+        # Condiciones iniciales
+        S0 = N - I0
+        R0 = 0.0
+        
+        # Tiempo (en días)
+        t = np.linspace(0, days, days)
+        
+        # Ecuaciones diferenciales del modelo SIR
+        def deriv(y, t, N, beta, gamma):
+            S, I, R = y
+            dSdt = -beta * S * I / N
+            dIdt = beta * S * I / N - gamma * I
+            dRdt = gamma * I
+            return dSdt, dIdt, dRdt
+        
+        # Vector de condiciones iniciales
+        y0 = S0, I0, R0
+        
+        # Integrar las ecuaciones SIR en el tiempo
+        ret = odeint(deriv, y0, t, args=(N, beta, gamma))
+        S, I, R = ret.T
+        
+        # Encontrar el pico de la epidemia
+        peak_day = np.argmax(I)
+        peak_infected = I[peak_day]
+        peak_rate = (beta * S[peak_day] / N - gamma)
+        
+        return jsonify({
+            'success': True,
+            'days': t.tolist(),
+            'susceptible': S.tolist(),
+            'infected': I.tolist(),
+            'recovered': R.tolist(),
+            'population': N,
+            'peak': {
+                'day': int(peak_day),
+                'infected': float(peak_infected),
+                'rate': float(peak_rate)
+            },
+            'final': {
+                'susceptible': float(S[-1]),
+                'infected': float(I[-1]),
+                'recovered': float(R[-1])
+            }
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        })
+
+# ******************************************************
+# *     MODELO DE DINÁMICA DE FLUIDOS - BERNOULLI      *
+# ******************************************************
+@app.route('/bernoulli', methods=['POST'])
+def bernoulli():
+    data = request.json
+    
+    try:
+        # Constantes
+        g = 9.81  # m/s²
+        
+        # Parámetros del punto 1
+        p1 = float(data['p1'])
+        v1 = float(data['v1'])
+        h1 = float(data['h1'])
+        
+        # Parámetros del punto 2
+        h2 = float(data['h2'])
+        density = float(data['density'])
+        
+        # Determinar qué variable calcular
+        if data['p2'] is None:
+            # Calcular presión en punto 2
+            v2 = float(data['v2'])
+            p2 = p1 + 0.5*density*(v1**2 - v2**2) + density*g*(h1 - h2)
+            calculated = 'p2'
+        else:
+            # Calcular velocidad en punto 2
+            p2 = float(data['p2'])
+            v2_squared = v1**2 + 2*(p1 - p2)/density + 2*g*(h1 - h2)
+            
+            if v2_squared < 0:
+                raise ValueError("No hay solución real (velocidad imaginaria)")
+            
+            v2 = math.sqrt(v2_squared)
+            calculated = 'v2'
+        
+        return jsonify({
+            'success': True,
+            'p1': p1,
+            'v1': v1,
+            'h1': h1,
+            'p2': p2,
+            'v2': v2,
+            'h2': h2,
+            'density': density,
+            'calculated': calculated
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        })
+
+# ****************************************************************
+# *     MODELO DE INTERCEPTACIÓN DE TRAYECTORIAS DE MISILES      *
+# ****************************************************************
+@app.route('/interception', methods=['POST'])
+def interception():
+    data = request.json
+    
+    try:
+        # Parámetros del objetivo
+        target = {
+            'x': float(data['target']['x']),
+            'y': float(data['target']['y']),
+            'vx': float(data['target']['vx']),
+            'vy': float(data['target']['vy'])
+        }
+        
+        # Parámetros del misil
+        missile = {
+            'x': float(data['missile']['x']),
+            'y': float(data['missile']['y']),
+            'speed': float(data['missile']['speed']),
+            'N': float(data['missile']['N'])  # Constante de navegación
+        }
+        
+        # Configuración de la simulación
+        dt = 0.1  # Paso de tiempo (s)
+        max_time = 100  # Tiempo máximo de simulación (s)
+        
+        # Almacenar trayectorias
+        target_path = {'x': [], 'y': []}
+        missile_path = {'x': [], 'y': []}
+        
+        # Condiciones iniciales
+        t = 0
+        intercepted = False
+        
+        # Ángulo inicial del misil hacia el objetivo
+        dx = target['x'] - missile['x']
+        dy = target['y'] - missile['y']
+        initial_angle = math.atan2(dy, dx)
+        missile_angle = initial_angle
+        
+        # Simulación paso a paso
+        while t < max_time and not intercepted:
+            # 1. Actualizar posición del objetivo
+            target['x'] += target['vx'] * dt
+            target['y'] += target['vy'] * dt
+            
+            # 2. Calcular línea de visión (LOS) y su derivada
+            dx = target['x'] - missile['x']
+            dy = target['y'] - missile['y']
+            los = math.atan2(dy, dx)
+            
+            # Para la derivada del LOS, necesitamos la velocidad relativa
+            if t > 0:
+                prev_los = math.atan2(
+                    target_path['y'][-1] - missile_path['y'][-1],
+                    target_path['x'][-1] - missile_path['x'][-1]
+                )
+                los_rate = (los - prev_los) / dt
+            else:
+                los_rate = 0
+            
+            # 3. Calcular aceleración lateral (comando de giro)
+            acceleration = missile['N'] * missile['speed'] * los_rate
+            
+            # 4. Actualizar ángulo del misil
+            missile_angle += acceleration * dt / missile['speed']
+            
+            # 5. Actualizar posición del misil
+            missile['x'] += missile['speed'] * math.cos(missile_angle) * dt
+            missile['y'] += missile['speed'] * math.sin(missile_angle) * dt
+            
+            # Guardar trayectorias
+            target_path['x'].append(target['x'])
+            target_path['y'].append(target['y'])
+            missile_path['x'].append(missile['x'])
+            missile_path['y'].append(missile['y'])
+            
+            # 6. Verificar interceptación
+            distance = math.sqrt((target['x'] - missile['x'])**2 + (target['y'] - missile['y'])**2)
+            if distance < 5:  # Umbral de interceptación (5m)
+                intercepted = True
+            
+            t += dt
+        
+        if not intercepted:
+            raise ValueError("No se logró interceptación en el tiempo máximo")
+        
+        # Calcular distancia recorrida por el misil
+        distance = 0
+        for i in range(1, len(missile_path['x'])):
+            dx = missile_path['x'][i] - missile_path['x'][i-1]
+            dy = missile_path['y'][i] - missile_path['y'][i-1]
+            distance += math.sqrt(dx**2 + dy**2)
+        
+        return jsonify({
+            'success': True,
+            'time': t,
+            'distance': distance,
+            'initial_angle': initial_angle,
+            'target': target,
+            'missile': missile,
+            'interception': {
+                'x': target['x'],
+                'y': target['y']
+            },
+            'target_path': target_path,
+            'missile_path': missile_path
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        })
+
 
 if __name__ == '__main__':
     app.run(debug=True)
