@@ -10,7 +10,7 @@
   <a href="https://drive.google.com/drive/folders/19wBxe_--0iD4wVQFVGS0qkgQbykX_vxg?usp=sharing" target="_blank" style="text-decoration: none;">
     <img src="https://img.shields.io/badge/⬇️_Descargar_Instalador_Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white&border-radius=15px" alt="Descargar Instalador">
   </a>
-  <a href="https://drive.google.com/file/d/185xn4sWusE-siCI76zf-O_hjFwvlzqjx/view?usp=sharing" target="_blank" style="text-decoration: none;">
+  <a href="https://drive.google.com/file/d/1Dik0z4n06v4k1JwpVIjHRIvkCqvnykUm/view?usp=sharing" target="_blank" style="text-decoration: none;">
     <img src="https://img.shields.io/badge/📘_Manual_de_Usuario-FF6D01?style=for-the-badge&logo=bookstack&logoColor=white&border-radius=15px" alt="Manual de Usuario">
   </a>
   <a href="https://github.com/AlexisJr2004/calculadora_matricial" target="_blank" style="text-decoration: none;">
@@ -71,7 +71,7 @@ http://localhost:5000
 Descarga el manual completo de usuario:
 
 <div align="center" style="margin: 20px 0;">
-  <a href="https://drive.google.com/file/d/185xn4sWusE-siCI76zf-O_hjFwvlzqjx/view?usp=sharing" target="_blank" style="text-decoration: none;">
+  <a href="https://drive.google.com/file/d/1Dik0z4n06v4k1JwpVIjHRIvkCqvnykUm/view?usp=sharing" target="_blank" style="text-decoration: none;">
     <img src="https://img.shields.io/badge/📘_Manual_de_Usuario-FF6D01?style=for-the-badge&logo=bookstack&logoColor=white&border-radius=15px" alt="Manual de Usuario">
   </a>
 </div>
