@@ -1,3 +1,6 @@
+Here's the updated README.md for SCIENCE CALC with the new features and improvements:
+
+```markdown
 # SCIENCE CALC - Calculadora Científica Avanzada
 
 <p align="center">
@@ -27,6 +30,8 @@
 - Cálculos vectoriales
 - Graficación 2D/3D
 - Cálculo diferencial e integral
+- Solución de ecuaciones diferenciales
+- Modelos matemáticos aplicados
 
 Con una interfaz intuitiva y capacidades de visualización, es ideal para aplicaciones en modelos matemáticos y simulaciones.
 
@@ -76,15 +81,56 @@ Descarga el manual completo de usuario:
   </a>
 </div>
 
+## 🌟 Novedades en la Versión 3.0
+
+### 🔥 Características destacadas:
+- **Nuevo módulo de ecuaciones diferenciales** con 4 métodos numéricos:
+  - Euler
+  - Euler mejorado
+  - Runge-Kutta (4to orden)
+  - Serie de Taylor
+- **Modelos matemáticos aplicados**:
+  - Modelo SIR de propagación de epidemias
+  - Ecuación de Bernoulli para fluidos
+  - Modelo de interceptación de trayectorias
+- **Interfaz mejorada** con pestañas intuitivas
+- **Visualización gráfica avanzada** con Plotly y Chart.js
+
 ## 📊 Características Principales
 
 | Módulo | Operaciones Disponibles |
 |--------|-------------------------|
-| Matrices | Suma, resta, multiplicación, determinante, inversa, transpuesta |
+| Matrices | Suma, resta, multiplicación, determinante, inversa, transpuesta, rango, traza |
 | Polinomios | Operaciones algebraicas, derivación, integración, raíces |
-| Vectores | Productos punto y cruz, magnitud, normalización |
+| Vectores | Productos punto y cruz, magnitud, normalización, ángulo, proyección |
 | Gráficas | Visualización 2D/3D de funciones matemáticas |
-| Cálculo | Derivación e integración simbólica |
+| Cálculo | Derivación, integración, límites, series de Taylor |
+| Ecuaciones Diferenciales | Solución analítica y numérica con visualización gráfica |
+| Modelos Matemáticos | SIR, Bernoulli, Interceptación con análisis detallado |
+
+## 🛠 Ejemplos de Uso
+
+### 1. Ecuaciones Diferenciales
+```python
+# Ejemplo: Resolver y' = x + y con condición inicial y(0) = 1
+# Usando el método de Runge-Kutta
+1. Seleccionar pestaña "Ecu. Diferenciales"
+2. Ingresar la ecuación: y' = x + y
+3. Especificar condición inicial: x₀=0, y₀=1
+4. Seleccionar método numérico
+5. Visualizar solución y gráfica
+```
+
+### 2. Modelo SIR
+```python
+# Simular propagación de epidemia con:
+# Población: 1000, Infectados iniciales: 1
+# β=0.5 (tasa de infección), γ=0.1 (tasa de recuperación)
+1. Seleccionar pestaña "Modelos" → "Modelo SIR"
+2. Ingresar parámetros
+3. Ejecutar simulación
+4. Analizar gráficos de evolución
+```
 
 ## 📦 Dependencias Técnicas
 
@@ -93,6 +139,9 @@ flask==3.0.3       # Framework web
 numpy==2.1.1       # Cálculos numéricos
 sympy==1.13.3      # Matemática simbólica
 plotly==5.24.1     # Visualización gráfica
+scipy==1.13.1      # Integración numérica
+chart.js==3.7.1    # Gráficos 2D
+mathjax==3.2.0     # Renderizado de fórmulas
 ```
 
 ## 🛠 Soporte y Contacto
@@ -111,3 +160,4 @@ Si encuentras algún problema o tienes sugerencias:
 ---
 
 📄 **Licencia MIT** © 2025 - [Steven Alexander Nieto Duran](https://github.com/AlexisJr2004)
+```
