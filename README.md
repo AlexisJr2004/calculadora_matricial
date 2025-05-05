@@ -1,6 +1,4 @@
-Here's the updated README.md for SCIENCE CALC with the new features and improvements:
 
-```markdown
 # SCIENCE CALC - Calculadora Científica Avanzada
 
 <p align="center">
