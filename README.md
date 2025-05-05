@@ -106,30 +106,6 @@ Descarga el manual completo de usuario:
 | Ecuaciones Diferenciales | Solución analítica y numérica con visualización gráfica |
 | Modelos Matemáticos | SIR, Bernoulli, Interceptación con análisis detallado |
 
-## 🛠 Ejemplos de Uso
-
-### 1. Ecuaciones Diferenciales
-```python
-# Ejemplo: Resolver y' = x + y con condición inicial y(0) = 1
-# Usando el método de Runge-Kutta
-1. Seleccionar pestaña "Ecu. Diferenciales"
-2. Ingresar la ecuación: y' = x + y
-3. Especificar condición inicial: x₀=0, y₀=1
-4. Seleccionar método numérico
-5. Visualizar solución y gráfica
-```
-
-### 2. Modelo SIR
-```python
-# Simular propagación de epidemia con:
-# Población: 1000, Infectados iniciales: 1
-# β=0.5 (tasa de infección), γ=0.1 (tasa de recuperación)
-1. Seleccionar pestaña "Modelos" → "Modelo SIR"
-2. Ingresar parámetros
-3. Ejecutar simulación
-4. Analizar gráficos de evolución
-```
-
 ## 📦 Dependencias Técnicas
 
 ```plaintext
@@ -158,4 +134,3 @@ Si encuentras algún problema o tienes sugerencias:
 ---
 
 📄 **Licencia MIT** © 2025 - [Steven Alexander Nieto Duran](https://github.com/AlexisJr2004)
-```
