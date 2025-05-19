@@ -1654,7 +1654,7 @@
 
           <!-- Calculus Section -->
           <div id="calculus-section" class="hidden fade-in py-8">
-            <!-- Header Section (se mantiene igual) -->
+            <!-- Header Section -->
             <div class="mb-8">
               <div
                 class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 mb-3"
@@ -1674,36 +1674,33 @@
             <div class="flex flex-col lg:flex-row gap-6">
               <!-- Left Column - Calculus Operations -->
               <div class="flex-1">
-                <!-- Function Input (se mantiene igual) -->
-                <div
-                  class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow mb-6"
-                >
+                <!-- Function Input -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow mb-6">
                   <div class="flex justify-between items-center mb-4">
                     <h3 class="font-medium text-gray-800 flex items-center">
-                      <div
-                        class="w-8 h-8 rounded-md bg-purple-100 flex items-center justify-center mr-2"
-                      >
-                        <i
-                          class="fas fa-square-root-alt text-purple-500 text-sm"
-                        ></i>
+                      <div class="w-8 h-8 rounded-md bg-purple-100 flex items-center justify-center mr-2">
+                        <i class="fas fa-square-root-alt text-purple-500 text-sm"></i>
                       </div>
                       <span>Función Matemática</span>
                     </h3>
-                    <button
-                      onclick="clearCalculusFunction()"
-                      class="rounded-full clear-btn bg-purple-100 hover:bg-purple-200"
-                    >
+                    <button onclick="clearCalculusFunction()" class="rounded-full clear-btn bg-purple-100 hover:bg-purple-200">
                       <i class="p-2 fas fa-eraser text-purple-500 text-sm"></i>
                     </button>
                   </div>
-                  <input
-                    type="text"
-                    id="calculus-function"
-                    class="input-field w-full"
-                    placeholder="Ej: x**2 + sin(x), exp(x)*cos(x), log(x)"
-                  />
+                  <div class="flex items-center gap-2 mb-2">
+                    <input type="text" id="calculus-function" class="input-field flex-1" placeholder="Ej: a**2 + sin(b), exp(t)*cos(t), log(z)">
+                    <select id="calculus-variable" class="input-field w-20">
+                      <option value="x">x</option>
+                      <option value="a">a</option>
+                      <option value="b">b</option>
+                      <option value="c">c</option>
+                      <option value="t">t</option>
+                      <option value="y">y</option>
+                      <option value="z">z</option>
+                    </select>
+                  </div>
                   <p class="text-xs text-gray-500 mt-1">
-                    Usa x como variable. Ejemplos: x^2, sin(x), exp(x), log(x)
+                    Usa cualquier letra como variable. Ejemplos: t^2, sin(a), exp(b), log(z)
                   </p>
                 </div>
 
@@ -1771,7 +1768,7 @@
                   </div>
                 </div>
 
-                <!-- Operations (se mantiene igual) -->
+                <!-- Operations -->
                 <div class="mb-6">
                   <h3
                     class="text-lg font-semibold text-gray-800 mb-3 flex items-center"
@@ -1809,7 +1806,7 @@
                   </div>
                 </div>
 
-                <!-- Result (se mantiene igual) -->
+                <!-- Result  -->
                 <div
                   class="bg-white rounded-lg shadow-md border border-gray-100 p-5"
                 >
@@ -2098,7 +2095,7 @@
 
           <!-- Differential Equations Section -->
           <div id="differential-section" class="hidden fade-in py-8">
-            <!-- Header Section (se mantiene igual) -->
+            <!-- Header Section -->
             <div class="mb-8">
               <div
                 class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 mb-3"
@@ -2120,7 +2117,7 @@
             <div class="flex flex-col lg:flex-row gap-6">
               <!-- Left Column - Differential Equations Operations -->
               <div class="flex-1">
-                <!-- Differential Equation Input (se mantiene igual) -->
+                <!-- Differential Equation Input -->
                 <div
                   class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow mb-6"
                 >
@@ -2151,7 +2148,7 @@
                   </p>
                 </div>
 
-                <!-- Initial Conditions (se mantiene igual) -->
+                <!-- Initial Conditions -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <!-- Initial Value -->
                   <div
@@ -2192,7 +2189,7 @@
                   </div>
                 </div>
 
-                <!-- Numerical Method Options (se mantiene igual) -->
+                <!-- Numerical Method Options -->
                 <div
                   id="numerical-options-container"
                   class="hidden bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-6"
@@ -2245,7 +2242,7 @@
                   </div>
                 </div>
 
-                <!-- Solution Type Selector (se mantiene igual) -->
+                <!-- Solution Type Selector -->
                 <div
                   class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 p-4 bg-indigo-50 rounded-lg border border-indigo-100"
                 >
@@ -2294,7 +2291,7 @@
                   </div>
                 </div>
 
-                <!-- Numerical Method Selector (se mantiene igual) -->
+                <!-- Numerical Method Selector -->
                 <div
                   id="method-selector-container"
                   class="hidden bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-6"
@@ -2332,7 +2329,7 @@
                   </div>
                 </div>
 
-                <!-- Solve Button for Analytical Solutions (se mantiene igual) -->
+                <!-- Solve Button for Analytical Solutions -->
                 <div id="analytical-solve-container" class="mb-6">
                   <button
                     onclick="solveDifferentialEquation('analytical')"
@@ -2343,7 +2340,7 @@
                   </button>
                 </div>
 
-                <!-- Result (se mantiene igual) -->
+                <!-- Resul -->
                 <div
                   class="bg-white rounded-lg shadow-md border border-gray-100 p-5"
                 >
@@ -2368,7 +2365,7 @@
                   </div>
                 </div>
 
-                <!-- Graph Container (se mantiene igual) -->
+                <!-- Graph Container -->
                 <div
                   id="graph-container"
                   class="mt-6 bg-white rounded-lg shadow-md border border-gray-100 p-5"

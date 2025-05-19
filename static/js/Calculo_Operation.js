@@ -148,6 +148,7 @@ function updateCalcMathPreview() {
  */
 async function calculusOperation(operation) {
     const func = document.getElementById("calculus-function").value;
+    const variable = document.getElementById("calculus-variable").value;
     const showSteps = document.getElementById("show-steps-checkbox").checked;
 
     if (!func) {
@@ -160,6 +161,7 @@ async function calculusOperation(operation) {
     const data = {
         operation: operation,
         function: func,
+        variable: variable,  // Añadir la variable seleccionada
         show_steps: showSteps
     };
 
