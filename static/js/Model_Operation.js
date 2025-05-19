@@ -1,40 +1,52 @@
 // =============================================
-// Modelos Matemáticos
+// 📊 MODELOS MATEMÁTICOS
 // =============================================
 
-// Mostrar/ocultar modelos
+// ===============================
+// Gestión de pestañas y visualización de modelos
+// ===============================
+
+/**
+ * Muestra u oculta el contenido del modelo seleccionado y actualiza las pestañas
+ */
 function showModel(modelId) {
-    // Actualizar pestañas activas
+    // Desactivar todas las pestañas
     document.querySelectorAll('.model-tab').forEach(tab => {
         tab.classList.remove('active');
         tab.classList.remove('bg-indigo-600', 'text-white');
         tab.classList.add('bg-indigo-100', 'text-indigo-800');
     });
-    
+
     // Activar la pestaña seleccionada
     const activeTab = document.querySelector(`.model-tab[onclick="showModel('${modelId}')"]`);
     activeTab.classList.add('active');
     activeTab.classList.remove('bg-indigo-100', 'text-indigo-800');
     activeTab.classList.add('bg-indigo-600', 'text-white');
-    
-    // Mostrar/ocultar contenido
+
+    // Mostrar solo el contenido del modelo seleccionado
     document.querySelectorAll('.model-content').forEach(content => {
         content.classList.add('hidden');
     });
     document.getElementById(`${modelId}-model`).classList.remove('hidden');
 }
 
+// ===============================
 // Modelo SIR de Propagación de Epidemias
+// ===============================
+
+/**
+ * Ejecuta el modelo SIR con los parámetros ingresados por el usuario
+ */
 async function runEpidemicModel() {
     try {
-        // Obtener parámetros del usuario (puedes crear inputs en tu HTML)
+        // Obtener parámetros del usuario
         const population = parseFloat(document.getElementById('epidemic-population').value) || 1000;
         const initialInfected = parseFloat(document.getElementById('epidemic-initial-infected').value) || 1;
         const beta = parseFloat(document.getElementById('epidemic-beta').value) || 0.5;  // Tasa de contacto
         const gamma = parseFloat(document.getElementById('epidemic-gamma').value) || 0.1; // Tasa de recuperación
         const days = parseFloat(document.getElementById('epidemic-days').value) || 100;
-        
-        // Enviar al backend
+
+        // Enviar datos al backend
         const response = await fetch('/epidemic_model', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -48,7 +60,7 @@ async function runEpidemicModel() {
         });
 
         const data = await response.json();
-        
+
         if (data.success) {
             displayEpidemicResults(data);
         } else {
@@ -59,9 +71,12 @@ async function runEpidemicModel() {
     }
 }
 
+/**
+ * Muestra los resultados del modelo SIR y genera la gráfica
+ */
 function displayEpidemicResults(data) {
     const resultDiv = document.getElementById('epidemic-result');
-    
+
     // Tabla de resultados
     let html = `
         <div class="bg-white rounded-lg shadow-md p-4 mb-4">
@@ -82,35 +97,34 @@ function displayEpidemicResults(data) {
                     <p class="text-xl font-bold">${(data.peak.rate*100).toFixed(1)}% por día</p>
                 </div>
             </div>
-            
             <div id="epidemic-chart" style="height: 400px;"></div>
         </div>
     `;
-    
+
     resultDiv.innerHTML = html;
-    
-    // Gráfica
+
+    // Gráfica de evolución
     const trace1 = {
         x: data.days,
         y: data.susceptible,
         name: 'Susceptibles',
         line: {color: '#3b82f6'}
     };
-    
+
     const trace2 = {
         x: data.days,
         y: data.infected,
         name: 'Infectados',
         line: {color: '#ef4444'}
     };
-    
+
     const trace3 = {
         x: data.days,
         y: data.recovered,
         name: 'Recuperados',
         line: {color: '#10b981'}
     };
-    
+
     Plotly.newPlot('epidemic-chart', [trace1, trace2, trace3], {
         title: 'Modelo SIR - Evolución de la Epidemia',
         xaxis: {title: 'Días'},

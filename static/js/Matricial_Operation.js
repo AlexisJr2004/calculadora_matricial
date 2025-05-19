@@ -2,11 +2,19 @@
 // 🔢 OPERACIONES CON MATRICES
 // =============================================
 
+// ===============================
+// Variables globales
+// ===============================
 let matrixRows = 3;
 let matrixCols = 3;
 
+// ===============================
+// Funciones de UI y manejo de inputs
+// ===============================
 
-
+/**
+ * Actualiza el tamaño de las matrices según los selectores
+ */
 function updateMatrixSize() {
     matrixRows = parseInt(document.getElementById("matrix-rows").value);
     matrixCols = parseInt(document.getElementById("matrix-cols").value);
@@ -14,6 +22,9 @@ function updateMatrixSize() {
     createMatrixInputs("matrixB");
 }
 
+/**
+ * Crea los inputs para una matriz dada
+ */
 function createMatrixInputs(containerId) {
     const container = document.getElementById(containerId);
     container.innerHTML = "";
@@ -27,6 +38,9 @@ function createMatrixInputs(containerId) {
     }
 }
 
+/**
+ * Llena una matriz con valores aleatorios entre -5 y 4
+ */
 function randomizeMatrix(matrix) {
     const inputs = document.querySelectorAll(`#matrix${matrix} input`);
     inputs.forEach(input => {
@@ -34,11 +48,17 @@ function randomizeMatrix(matrix) {
     });
 }
 
+/**
+ * Limpia los valores de una matriz
+ */
 function clearMatrix(matrix) {
     const inputs = document.querySelectorAll(`#matrix${matrix} input`);
     inputs.forEach(input => input.value = "");
 }
 
+/**
+ * Obtiene los valores de una matriz como array bidimensional
+ */
 function getMatrixValues(matrixId) {
     const inputs = document.querySelectorAll(`#${matrixId} input`);
     const matrix = [];
@@ -54,11 +74,19 @@ function getMatrixValues(matrixId) {
     return matrix;
 }
 
+// ===============================
+// Operaciones con matrices y resultados
+// ===============================
+
+/**
+ * Realiza una operación matricial y muestra el resultado
+ */
 async function matrixOperation(operation) {
     try {
         const matrixA = getMatrixValues("matrixA");
         let requestData = { operation, matrixA };
         let selectedMatrix = 'A';
+
         if (['inverse', 'transpose', 'trace', 'determinant', 'rank'].includes(operation)) {
             selectedMatrix = document.querySelector('input[name="selectedMatrix"]:checked').value;
         }
@@ -86,7 +114,7 @@ async function matrixOperation(operation) {
                 data.result,
                 Array.isArray(data.result) ? "matrix" : "number",
                 data.formula,
-                data.steps // <-- PASOS
+                data.steps
             );
         } else {
             displayMatrixResult(`Error: ${data.error}`, "error");
@@ -98,15 +126,15 @@ async function matrixOperation(operation) {
 }
 
 /**
- * Muestra el resultado de una operación
- * {Array|number|string} result - Resultado a mostrar
- * {string} type - 'matrix', 'number', 'error', 'loading'
- * {string} formula - Fórmula matemática
- * {Array} steps - Paso a paso
+ * Muestra el resultado de una operación matricial
+ * @param {Array|number|string} result - Resultado a mostrar
+ * @param {string} type - 'matrix', 'number', 'error', 'loading'
+ * @param {string} formula - Fórmula matemática
+ * @param {Array} steps - Paso a paso
  */
 function displayMatrixResult(result, type, formula = null, steps = null) {
     const resultDiv = document.getElementById("matrix-result");
-    
+
     // Encabezado con fórmula matemática renderizada
     let formulaHtml = '';
     if (formula) {
@@ -121,7 +149,7 @@ function displayMatrixResult(result, type, formula = null, steps = null) {
             </div>
         `;
     }
-    
+
     // Pasos detallados con formato mejorado
     let stepsHtml = '';
     if (steps && steps.length > 0) {
@@ -130,7 +158,6 @@ function displayMatrixResult(result, type, formula = null, steps = null) {
                 <div class="font-bold text-gray-700 mb-3 text-lg border-b pb-2">Procedimiento Detallado</div>
                 <div class="space-y-4">
                     ${steps.map((step, i) => {
-                        // Detectar si el paso contiene una matriz
                         const hasMatrix = step.includes('<table class="matrix">');
                         return `
                             <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
@@ -148,7 +175,7 @@ function displayMatrixResult(result, type, formula = null, steps = null) {
             </div>
         `;
     }
-    
+
     // Resultado principal con diseño mejorado
     let resultHtml = '';
     if (type === "loading") {
@@ -210,7 +237,7 @@ function displayMatrixResult(result, type, formula = null, steps = null) {
             </div>
         `;
     }
-    
+
     // Combinar todo
     resultDiv.innerHTML = `
         ${formulaHtml}
@@ -219,17 +246,22 @@ function displayMatrixResult(result, type, formula = null, steps = null) {
         </div>
         ${stepsHtml}
     `;
-    
+
     // Renderizar fórmulas matemáticas con MathJax si está disponible
     if (typeof MathJax !== 'undefined') {
         MathJax.typeset();
     }
 }
 
+/**
+ * Renderiza una fórmula matemática en LaTeX
+ */
 function renderMathFormula(formula) {
-    // Simple renderizado para fórmulas LaTeX
     return `\\(${formula}\\)`;
 }
 
-// Inicializar inputs al cargar
+// ===============================
+// Inicialización de eventos
+// ===============================
+
 document.addEventListener('DOMContentLoaded', updateMatrixSize);

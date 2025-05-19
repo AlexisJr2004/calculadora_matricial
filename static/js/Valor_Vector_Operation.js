@@ -2,7 +2,14 @@
 // VALORES Y VECTORES PROPIOS
 // =============================================
 
+// ===============================
+// VARIABLES GLOBALES
+// ===============================
 let eqCount = 2; // Número de ecuaciones en el sistema
+
+// ===============================
+// NPUTS Y FORMULARIOS
+// ===============================
 
 /**
  * Actualiza los inputs para las ecuaciones diferenciales
@@ -30,7 +37,7 @@ function updateDiffEqInputs() {
     input.placeholder = "Ej: 0.3*X1 + 0.1*X2";
     input.id = `eq${i}`;
     
-    // Set default values for first two equations
+    // Valores por defecto para las dos primeras ecuaciones
     if (i === 0 && eqCount >= 2) input.value = "0.3*X1 + 0.1*X2";
     if (i === 1 && eqCount >= 2) input.value = "0.02*X1 - 0.05*X2";
     
@@ -38,7 +45,7 @@ function updateDiffEqInputs() {
     eqDiv.appendChild(input);
     inputsContainer.appendChild(eqDiv);
     
-    // Crear inputs para condiciones iniciales
+    // Inputs para condiciones iniciales
     const condDiv = document.createElement("div");
     condDiv.className = "bg-gray-50 p-3 rounded-md border border-gray-200";
     
@@ -52,7 +59,7 @@ function updateDiffEqInputs() {
     condInput.placeholder = "0";
     condInput.id = `ic${i}`;
     
-    // Set default initial conditions
+    // Valores iniciales por defecto
     if (i === 0) condInput.value = "50000";
     if (i === 1) condInput.value = "10";
     
@@ -62,12 +69,9 @@ function updateDiffEqInputs() {
   }
 }
 
-/**
- * Resuelve el sistema de ecuaciones diferenciales
- */
-// =============================================
-// VALORES Y VECTORES PROPIOS - FUNCIONES MEJORADAS
-// =============================================
+// ===============================
+// RESOLUCIÓN DEL SISTEMA
+// ===============================
 
 /**
  * Resuelve el sistema de ecuaciones diferenciales con análisis de valores propios
@@ -93,7 +97,7 @@ async function solveDiffEqSystem() {
       if (!eq) throw new Error(`La ecuación ${i+1} está vacía`);
       equations.push(eq);
 
-      // Extraer coeficientes para la matriz A (robusto: soporta signos, sin *, coef. negativos, etc)
+      // Extraer coeficientes para la matriz A
       const row = [];
       for (let j = 0; j < eqCount; j++) {
         const regex = new RegExp(`([+-]?\\s*\\d*\\.?\\d*)\\s*\\*?\\s*X${j+1}\\b`, 'g');
@@ -133,7 +137,7 @@ async function solveDiffEqSystem() {
         h,
         tStart,
         tEnd,
-        matrixA  // Enviamos la matriz A al backend
+        matrixA
       })
     });
     
@@ -146,11 +150,8 @@ async function solveDiffEqSystem() {
     if (data.success) {
       displayDiffEqResult(data.solution, "table");
       window.diffEqData = data.solution;
-      
-      // Mostrar análisis de valores/vectores propios y pasos detallados
       displayEigenAnalysis(data.eigenAnalysis);
       displaySolutionSteps(data.solution, data.steps, method, matrixA, initialConditions);
-      
     } else {
       displayDiffEqResult(`Error: ${data.error}`, "error");
       document.getElementById("diffeq-steps").innerHTML = "";
@@ -162,6 +163,10 @@ async function solveDiffEqSystem() {
     console.error("Error en solveDiffEqSystem:", error);
   }
 }
+
+// ===============================
+// ANÁLISIS DE VALORES Y VECTORES PROPIOS
+// ===============================
 
 /**
  * Muestra el análisis de valores y vectores propios
@@ -277,6 +282,10 @@ function displayEigenAnalysis(eigenData) {
   }
 }
 
+// ===============================
+// PASOS DETALLADOS Y TABLA DE RESULTADOS
+// ===============================
+
 /**
  * Muestra los pasos detallados de la solución numérica
  */
@@ -388,17 +397,13 @@ function displaySolutionSteps(solution, steps, method, matrixA, initialCondition
   // Filas de datos (mostrar solo algunos puntos clave)
   const step = Math.max(1, Math.floor(solution.length / 5));
   for (let i = 0; i < solution.length; i += step) {
-    if (i >= solution.length - 1) i = solution.length - 1; // Asegurar el último punto
-    
+    if (i >= solution.length - 1) i = solution.length - 1;
     html += `<tr class="${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}">`;
     html += `<td class="px-4 py-2 whitespace-nowrap text-sm text-gray-700">${solution[i].t.toFixed(2)}</td>`;
-    
     for (let j = 0; j < eqCount; j++) {
       html += `<td class="px-4 py-2 whitespace-nowrap text-sm text-gray-700">${solution[i][`x${j}`].toFixed(4)}</td>`;
     }
-    
     html += `</tr>`;
-    
     if (i >= solution.length - 1) break;
   }
   
@@ -412,7 +417,10 @@ function displaySolutionSteps(solution, steps, method, matrixA, initialCondition
   }
 }
 
-// Funciones auxiliares para formatear matrices y vectores
+// ===============================
+// UTILIDADES DE FORMATO
+// ===============================
+
 function formatMatrix(matrix) {
   return `\\begin{bmatrix} ${matrix.map(row => row.join(' & ')).join(' \\\\ ')} \\end{bmatrix}`;
 }
@@ -420,6 +428,10 @@ function formatMatrix(matrix) {
 function formatVector(vector) {
   return `\\begin{bmatrix} ${vector.join(' \\\\ ')} \\end{bmatrix}`;
 }
+
+// ===============================
+// RESULTADOS Y TABLAS
+// ===============================
 
 /**
  * Muestra los resultados de la solución
@@ -450,31 +462,28 @@ function displayDiffEqResult(result, type) {
             <tr>
               <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">t</th>
     `;
-    
-    // Encabezados para cada variable
     for (let i = 0; i < eqCount; i++) {
       html += `<th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">X${i+1}</th>`;
     }
     html += `</tr></thead><tbody class="bg-white divide-y divide-gray-200">`;
-    
-    // Filas de datos
     result.forEach((row, idx) => {
       if (idx % Math.ceil(result.length / 20) === 0 || idx === result.length - 1) {
         html += `<tr class="${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}">`;
         html += `<td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">${row.t.toFixed(2)}</td>`;
-        
         for (let i = 0; i < eqCount; i++) {
           html += `<td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">${row[`x${i}`].toFixed(3)}</td>`;
         }
-        
         html += `</tr>`;
       }
     });
-    
     html += `</tbody></table></div>`;
     resultDiv.innerHTML = html;
   }
 }
+
+// ===============================
+// GRÁFICAS
+// ===============================
 
 /**
  * Grafica los resultados
@@ -541,5 +550,8 @@ function plotDiffEqResults() {
   });
 }
 
-// Inicializar inputs al cargar
-document.addEventListener('DOMContentLoaded', updateDiffEqInputs);a
+// ===============================
+// INICIALIZACIÓN
+// ===============================
+
+document.addEventListener('DOMContentLoaded', updateDiffEqInputs);

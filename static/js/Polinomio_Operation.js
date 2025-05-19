@@ -7,6 +7,16 @@
  */
 function clearPolynomial(fieldId) {
     document.getElementById(fieldId).value = "";
+    updatePolynomialPreview(fieldId);
+}
+
+/**
+ * Sanitiza la entrada de polinomio para evitar code injection
+ * Solo permite números, x, +, -, *, ^, paréntesis y espacios
+ */
+function sanitizePolynomialInput(input) {
+    // Elimina cualquier caracter no permitido
+    return input.replace(/[^0-9xX\+\-\*\^\(\)\.\s]/g, '');
 }
 
 /**
@@ -17,10 +27,11 @@ async function polynomialOperation(operation) {
     try {
         // Determinar qué polinomio usar para operaciones individuales
         let selectedPoly = document.querySelector('input[name="selectedPolynomial"]:checked').value;
-        
-        const poly1 = document.getElementById("poly1").value;
-        const poly2 = document.getElementById("poly2").value;
-        
+
+        // Sanitizar entradas antes de enviar al backend
+        const poly1 = sanitizePolynomialInput(document.getElementById("poly1").value);
+        const poly2 = sanitizePolynomialInput(document.getElementById("poly2").value);
+
         let requestData = {
             operation: operation,
             poly1: selectedPoly === "1" ? poly1 : poly2
@@ -70,7 +81,7 @@ async function polynomialOperation(operation) {
  */
 function displayPolynomialResult(data, type) {
     const resultDiv = document.getElementById("polynomial-result");
-    
+
     if (type === "loading") {
         resultDiv.innerHTML = `<div class="text-center p-4">⏳ ${data}</div>`;
         return;
@@ -101,7 +112,7 @@ function displayPolynomialResult(data, type) {
                 </div>
             </div>
         `;
-        
+
         // Renderizar LaTeX con MathJax
         if (typeof MathJax !== 'undefined') {
             MathJax.typeset();
@@ -135,7 +146,7 @@ let cursorPosition = 0;
 function updateSelectedPolyIndicator() {
     const selectedPoly = document.querySelector('input[name="selectedPolynomial"]:checked').value;
     const indicator = document.getElementById("current-target");
-    
+
     if (selectedPoly === "1") {
         indicator.textContent = "Polinomio 1";
         indicator.className = "text-sm px-2 py-1 rounded bg-blue-100 text-blue-800";
@@ -250,7 +261,7 @@ function clearMathInput() {
 // Función para convertir formato simple a LaTeX
 function convertToLatex(polyStr) {
     if (!polyStr) return '';
-    
+
     // Reemplazos para formato matemático
     return polyStr
         .replace(/\s+/g, ' ') // Elimina espacios múltiples
@@ -269,13 +280,13 @@ function updatePolynomialPreview(inputId) {
     const input = document.getElementById(inputId);
     const preview = document.getElementById(`${inputId}-preview`);
     const rendered = document.getElementById(`${inputId}-rendered`);
-    
+
     const rawText = input.value.trim();
     const latexStr = convertToLatex(rawText);
-    
+
     // Vista previa simple
     preview.textContent = rawText ? '✓' : '';
-    
+
     // Renderizado LaTeX
     if (rawText) {
         rendered.innerHTML = `\\[ ${latexStr} \\]`;
@@ -285,12 +296,6 @@ function updatePolynomialPreview(inputId) {
     } else {
         rendered.innerHTML = '';
     }
-}
-
-// Limpiar polinomio
-function clearPolynomial(inputId) {
-    document.getElementById(inputId).value = '';
-    updatePolynomialPreview(inputId);
 }
 
 // Inicializar al cargar la página

@@ -2,11 +2,20 @@
 // MÓDULO FUSIONADO: ALEATORIOS Y DISTRIBUCIONES
 // ===============================
 
+// ===============================
+// VARIABLES GLOBALES
+// ===============================
 let randomNumbers = [];
 let randomChart = null;
 let distributionChart = null;
 
-// Actualiza los parámetros según el método seleccionado
+// ===============================
+// INPUTS Y FORMULARIOS
+// ===============================
+
+/**
+ * Actualiza los parámetros según el método seleccionado
+ */
 function updateRandomParams() {
     const method = document.getElementById("random-method").value;
     const paramsDiv = document.getElementById("random-params");
@@ -141,9 +150,9 @@ function updateRandomParams() {
     paramsDiv.innerHTML = html;
 }
 
-// ===============================
-// Parámetros de distribución dinámicos
-// ===============================
+/**
+ * Actualiza los parámetros de la distribución seleccionada
+ */
 function updateFormFields() {
     const distribution = document.getElementById("distribution-type").value;
     const paramsDiv = document.getElementById("distribution-params");
@@ -197,8 +206,12 @@ function updateFormFields() {
 }
 
 // ===============================
-// Generar números aleatorios
+// GENERACIÓN DE NÚMEROS ALEATORIOS
 // ===============================
+
+/**
+ * Genera números aleatorios según el método seleccionado
+ */
 async function generateRandomNumbers() {
     const method = document.getElementById("random-method").value;
     const count = parseInt(document.getElementById("random-count").value);
@@ -287,6 +300,9 @@ async function generateRandomNumbers() {
     }
 }
 
+/**
+ * Muestra la fórmula del método seleccionado
+ */
 function showMethodFormula(method) {
     const formulaDiv = document.createElement('div');
     formulaDiv.id = "method-formula";
@@ -356,12 +372,16 @@ function showMethodFormula(method) {
         resultDiv.appendChild(formulaDiv);
     }
 
-    if (window.MathJax) MathJax.typeset(); // Renderizar LaTeX si MathJax está disponible
+    if (window.MathJax) MathJax.typeset();
 }
 
 // ===============================
-// Simular distribución usando los números generados
+// SIMULACIÓN DE DISTRIBUCIONES
 // ===============================
+
+/**
+ * Simula una distribución usando los números generados
+ */
 async function runDistributionSimulation() {
     const distribution = document.getElementById("distribution-type").value;
     if (!distribution) return;
@@ -475,8 +495,12 @@ async function runDistributionSimulation() {
 }
 
 // ===============================
-// Mostrar resultados de la distribución
+// RESULTADOS Y VISUALIZACIÓN
 // ===============================
+
+/**
+ * Muestra los resultados de la distribución simulada
+ */
 function displayDistributionResults(data) {
     let paramResumen = '';
     if (data.distribution === 'poisson') {
@@ -515,6 +539,9 @@ function displayDistributionResults(data) {
     }, 0);
 }
 
+/**
+ * Muestra los números aleatorios generados
+ */
 function displayRandomResults(numbers) {
     const resultDiv = document.getElementById("random-result");
     let html = `
@@ -534,6 +561,9 @@ function displayRandomResults(numbers) {
     resultDiv.innerHTML = html;
 }
 
+/**
+ * Muestra los resultados de las pruebas estadísticas
+ */
 function displayTestResults(results, testType) {
     const testDiv = document.getElementById("test-results-content");
     let html = '';
@@ -628,6 +658,9 @@ function displayTestResults(results, testType) {
     document.getElementById("test-results").classList.remove("hidden");
 }
 
+/**
+ * Muestra las fórmulas de las pruebas estadísticas
+ */
 function showTestFormulas(testType) {
     const formulaDiv = document.createElement('div');
     formulaDiv.id = "test-formulas";
@@ -683,12 +716,16 @@ function showTestFormulas(testType) {
         testResults.appendChild(formulaDiv);
     }
 
-    if (window.MathJax) MathJax.typeset(); // Renderizar LaTeX si MathJax está disponible
+    if (window.MathJax) MathJax.typeset();
 }
 
 // ===============================
-// Histograma de números aleatorios
+// HISTOGRAMAS Y GRÁFICAS
 // ===============================
+
+/**
+ * Histograma de números aleatorios generados
+ */
 function updateHistogram(numbers) {
     const ctx = document.getElementById('random-histogram').getContext('2d');
     const binCount = 10;
@@ -759,9 +796,9 @@ function updateHistogram(numbers) {
     }
 }
 
-// ===============================
-// Histograma de la distribución simulada
-// ===============================
+/**
+ * Histograma de la distribución simulada
+ */
 function renderDistributionChart(data) {
     const ctx = document.getElementById('distribution-chart').getContext('2d');
     if (distributionChart) distributionChart.destroy();
@@ -911,6 +948,9 @@ function renderDistributionChart(data) {
     });
 }
 
+/**
+ * Muestra la fórmula de la distribución seleccionada
+ */
 function showDistributionFormula(distribution) {
     let formula = '';
     let explanation = '';
@@ -940,8 +980,12 @@ function showDistributionFormula(distribution) {
 }
 
 // ===============================
-// Exportar números aleatorios
+// EXPORTACIÓN DE DATOS
 // ===============================
+
+/**
+ * Exporta los números aleatorios generados a un archivo CSV
+ */
 function downloadRandomNumbers() {
     if (randomNumbers.length === 0) {
         Swal.fire({
@@ -967,8 +1011,9 @@ function downloadRandomNumbers() {
 }
 
 // ===============================
-// Inicialización
+// INICIALIZACIÓN
 // ===============================
+
 document.addEventListener('DOMContentLoaded', function() {
     updateRandomParams();
     updateFormFields();

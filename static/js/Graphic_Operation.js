@@ -2,12 +2,22 @@
 // GRAFICACIÓN DE FUNCIONES
 // =============================================
 
+// ===============================
+// Variables globales
+// ===============================
 let currentChart = null;
 
+// ===============================
+// Funciones principales de graficación
+// ===============================
+
+/**
+ * Procesa la función y decide el tipo de gráfica a renderizar
+ */
 function plotFunction() {
     const type = document.getElementById("graph-type").value;
     let func = document.getElementById("graph-function").value.trim();
-    
+
     if (!func) {
         alert("Por favor ingrese una función");
         return;
@@ -15,7 +25,7 @@ function plotFunction() {
 
     // Reemplazar notación alternativa para ln y log
     func = func.replace(/ln/g, 'log');
-    
+
     // Configurar rangos según el tipo de gráfico
     let plotData = {
         type: type,
@@ -25,7 +35,7 @@ function plotFunction() {
     if (type === "2d") {
         plotData.x_min = parseFloat(document.getElementById("x-min").value);
         plotData.x_max = parseFloat(document.getElementById("x-max").value);
-        
+
         // Ajuste automático para funciones logarítmicas
         if (func.includes('log(x)')) {
             plotData.x_min = Math.max(0.0001, plotData.x_min);
@@ -35,7 +45,7 @@ function plotFunction() {
         plotData.x_max = parseFloat(document.getElementById("x-max-3d").value);
         plotData.y_min = parseFloat(document.getElementById("y-min-3d").value);
         plotData.y_max = parseFloat(document.getElementById("y-max-3d").value);
-        
+
         // Ajuste automático para funciones logarítmicas 3D
         if (func.includes('log(x)')) {
             plotData.x_min = Math.max(0.0001, plotData.x_min);
@@ -48,7 +58,7 @@ function plotFunction() {
     // Mostrar mensaje de carga
     const graphContainer = document.getElementById("graph-container");
     graphContainer.innerHTML = '<div class="flex items-center justify-center h-full"><p class="text-gray-500">Generando gráfica...</p></div>';
-    
+
     // Decidir qué tipo de gráfico renderizar
     if (type === "2d") {
         graphContainer.innerHTML = '<canvas id="chartCanvas" style="width: 100%; height: 100%;"></canvas>';
@@ -59,6 +69,9 @@ function plotFunction() {
     }
 }
 
+/**
+ * Renderiza una gráfica 2D usando Chart.js
+ */
 function render2DGraph(data) {
     fetch('/plot_function', {
         method: 'POST',
@@ -117,6 +130,9 @@ function render2DGraph(data) {
     });
 }
 
+/**
+ * Renderiza una gráfica 3D usando Plotly.js
+ */
 function render3DGraph(data) {
     fetch('/plot_function', {
         method: 'POST',
@@ -160,17 +176,17 @@ function render3DGraph(data) {
     });
 }
 
-// Manejar cambio entre 2D y 3D
-document.getElementById('graph-type').addEventListener('change', function() {
-    const type = this.value;
-    document.getElementById('graph-range-2d').classList.toggle('hidden', type !== '2d');
-    document.getElementById('graph-range-3d').classList.toggle('hidden', type === '2d');
-});
+// ===============================
+// Funciones de UI y eventos
+// ===============================
 
+/**
+ * Actualiza la vista previa de la función ingresada
+ */
 function updateFunctionPreview() {
     const funcInput = document.getElementById("graph-function").value.trim();
     const preview = document.getElementById("function-preview");
-    
+
     if (!funcInput) {
         preview.innerHTML = `
             <div class="text-center text-gray-500">
@@ -180,7 +196,7 @@ function updateFunctionPreview() {
         `;
         return;
     }
-    
+
     // Formatear para mejor visualización
     let displayText = funcInput
         .replace(/\*\*/g, '^')
@@ -192,26 +208,38 @@ function updateFunctionPreview() {
         .replace(/tan/g, 'tan')
         .replace(/log/g, 'log')
         .replace(/ln/g, 'ln');
-    
+
     const graphType = document.getElementById("graph-type").value;
     const title = graphType === "2d" ? `f(x) = ${displayText}` : `f(x,y) = ${displayText}`;
-    
+
     preview.innerHTML = `\\[ ${title} \\]`;
-    
+
     // Renderizar LaTeX
     if (typeof MathJax !== 'undefined') {
         MathJax.typesetPromise([preview]);
     }
 }
 
-// Inicializar eventos
+/**
+ * Maneja el cambio entre los rangos de 2D y 3D
+ */
+document.getElementById('graph-type').addEventListener('change', function() {
+    const type = this.value;
+    document.getElementById('graph-range-2d').classList.toggle('hidden', type !== '2d');
+    document.getElementById('graph-range-3d').classList.toggle('hidden', type === '2d');
+});
+
+// ===============================
+// Inicialización de eventos
+// ===============================
+
 document.addEventListener('DOMContentLoaded', function() {
     // Actualizar vista previa cuando cambia la función
     document.getElementById("graph-function").addEventListener('input', updateFunctionPreview);
-    
+
     // Actualizar vista previa cuando cambia el tipo de gráfico
     document.getElementById("graph-type").addEventListener('change', updateFunctionPreview);
-    
+
     // Inicializar vista previa
     updateFunctionPreview();
 });

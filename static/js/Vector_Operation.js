@@ -2,12 +2,20 @@
 // OPERACIONES CON VECTORES
 // =============================================
 
+// ===============================
+// Funciones de UI y manejo de inputs
+// ===============================
+
 /**
  * Limpia un campo de vector
  */
 function clearVector(fieldId) {
     document.getElementById(fieldId).value = "";
 }
+
+// ===============================
+// Operaciones con vectores y resultados
+// ===============================
 
 /**
  * Realiza una operación vectorial
@@ -16,10 +24,10 @@ async function vectorOperation(operation) {
     try {
         // Determinar qué vector usar para operaciones individuales
         let selectedVector = document.querySelector('input[name="selectedVector"]:checked').value;
-        
+
         const vector1 = document.getElementById("vector1").value;
         const vector2 = document.getElementById("vector2").value;
-        
+
         let requestData = {
             operation: operation,
             vector1: selectedVector === "1" ? vector1 : vector2
@@ -69,7 +77,7 @@ async function vectorOperation(operation) {
  */
 function displayVectorResult(data, type) {
     const resultDiv = document.getElementById("vector-result");
-    
+
     if (type === "loading") {
         resultDiv.innerHTML = `<div class="text-center p-4">⏳ ${data}</div>`;
         return;
@@ -117,7 +125,7 @@ function displayVectorResult(data, type) {
 
         resultContent += `</div>`;
         resultDiv.innerHTML = resultContent;
-        
+
         // Renderizar LaTeX con MathJax
         if (typeof MathJax !== 'undefined') {
             MathJax.typeset();

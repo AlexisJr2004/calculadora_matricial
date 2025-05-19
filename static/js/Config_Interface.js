@@ -12,16 +12,18 @@
  * 6. Ecuaciones Diferenciales
  * 7. Modelos Matemáticos
  * 8. Valores y Vectores Propios
- * 8. Números Aleatorios
- * 9. Simulación de MonteCarlo
- * 10. Acerca de
+ * 9. Números Aleatorios
+ * 10. Simulación de MonteCarlo
+ * 11. Acerca de
  */
 
 // =============================================
 // 🖥️ GESTIÓN DE INTERFAZ
 // =============================================
 
-// Botón para mostrar ayuda del uso de la calculadora
+/**
+ * Muestra la ventana de ayuda al usuario
+ */
 function mostrarAyuda() {
     Swal.fire({
         title: '¿Cómo usar esta calculadora?',
@@ -62,23 +64,26 @@ function mostrarAyuda() {
     });
 }
 
+/**
+ * Cambia la sección visible de la interfaz según la pestaña seleccionada
+ */
 function showSection(sectionId) {
     // Oculta todas las secciones
     document.querySelectorAll('[id$="-section"]').forEach(section => {
         section.classList.add("hidden");
     });
-    
+
     // Desactiva todas las pestañas
     document.querySelectorAll('.tab-button').forEach(tab => {
         tab.classList.remove("active");
     });
-    
+
     // Muestra la sección seleccionada
     document.getElementById(`${sectionId}-section`).classList.remove("hidden");
-    
+
     // Activa la pestaña seleccionada
     document.getElementById(`${sectionId}Tab`).classList.add("active");
-    
+
     // Actualiza el título de la página
     const sectionNames = {
         'home': 'Inicio',
@@ -94,21 +99,22 @@ function showSection(sectionId) {
         'montecarlo': 'Simulación de MonteCarlo',
         'about': 'Acerca de'
     };
-    
+
     document.title = `${sectionNames[sectionId]} | SCIENCE CALC`;
-    
+
     // Inicializar gráficos si es necesario
-    if (sectionId === 'random' && randomNumbers.length > 0) {
+    if (sectionId === 'random' && typeof randomNumbers !== 'undefined' && randomNumbers.length > 0) {
         updateHistogram(randomNumbers);
     }
-    if (sectionId === 'simulation' && simulationChart) {
+    if (sectionId === 'simulation' && typeof simulationChart !== 'undefined' && simulationChart) {
         simulationChart.update();
     }
 }
 
-// Configuración inicial al cargar la página
+// =============================================
+// 🔄 INICIALIZACIÓN AL CARGAR LA PÁGINA
+// =============================================
+
 document.addEventListener('DOMContentLoaded', function() {
     showSection("home");
 });
-
-

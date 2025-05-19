@@ -2,6 +2,10 @@
 // OPERACIONES CON ECUACIONES DIFERENCIALES
 // =============================================
 
+// ===============================
+// Funciones de UI y manejo de inputs
+// ===============================
+
 /**
  * Limpia todos los inputs de ecuaciones diferenciales
  */
@@ -28,7 +32,7 @@ function showDifferentialOptions() {
     document.getElementById("numerical-options-container").classList.add("hidden");
     document.getElementById("method-selector-container").classList.add("hidden");
     document.getElementById("analytical-solve-container").classList.add("hidden");
-    
+
     if (solutionType === "numerical") {
         document.getElementById("numerical-options-container").classList.remove("hidden");
         document.getElementById("method-selector-container").classList.remove("hidden");
@@ -36,6 +40,10 @@ function showDifferentialOptions() {
         document.getElementById("analytical-solve-container").classList.remove("hidden");
     }
 }
+
+// ===============================
+// Resolución de ecuaciones diferenciales
+// ===============================
 
 /**
  * Resuelve una ecuación diferencial con el método seleccionado
@@ -58,7 +66,7 @@ async function solveDifferentialEquation(method) {
     // Mostrar estado de carga
     displayDifferentialResult("Resolviendo ecuación diferencial...", "loading");
 
-    // Preparar datos para enviar - AQUÍ ESTÁ EL CAMBIO IMPORTANTE
+    // Preparar datos para enviar
     const data = {
         method: method,
         equation: equation,
@@ -66,7 +74,7 @@ async function solveDifferentialEquation(method) {
         initial_y: parseFloat(initialY),
         step_size: parseFloat(stepSize),
         num_points: parseInt(numPoints),
-        show_graph: showGraph // Enviamos el booleano directamente
+        show_graph: showGraph
     };
 
     try {
@@ -86,8 +94,8 @@ async function solveDifferentialEquation(method) {
 
         if (result.success) {
             displayDifferentialResult(result, "success");
-            
-            // CAMBIO CRÍTICO AQUÍ - Manejo de la gráfica
+
+            // Mostrar gráfica si corresponde
             const graphContainer = document.getElementById("graph-container");
             if (result.show_graph && result.graph_data) {
                 graphContainer.classList.remove("hidden");
@@ -109,7 +117,7 @@ async function solveDifferentialEquation(method) {
 function displayDifferentialResult(data, type) {
     const resultDiv = document.getElementById("differential-result");
     const graphContainer = document.getElementById("graph-container");
-    
+
     // Limpiar contenedores
     resultDiv.innerHTML = '';
     graphContainer.classList.add("hidden");
@@ -140,7 +148,7 @@ function displayDifferentialResult(data, type) {
                 </div>
             `;
         }
-        
+
         resultDiv.innerHTML = `
             <div class="text-center p-4">
                 <i class="fas fa-exclamation-triangle text-2xl mb-2 text-red-500"></i>
@@ -154,7 +162,7 @@ function displayDifferentialResult(data, type) {
         // Obtener valores iniciales del resultado o de los datos enviados
         const initialX = data.initial_x || parseFloat(document.getElementById("initial-x").value);
         const initialY = data.initial_y || parseFloat(document.getElementById("initial-y").value);
-    
+
         let resultHTML = `
             <div class="p-4 space-y-6">
                 <div class="bg-indigo-50 rounded-lg p-4 border border-indigo-200">
@@ -162,7 +170,6 @@ function displayDifferentialResult(data, type) {
                         <i class="fas ${getMethodIcon(data.method)} text-indigo-500 mr-2"></i>
                         ${getDifferentialMethodName(data.method)}
                     </h4>
-                    
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="bg-white rounded-lg p-3 border border-gray-200">
                             <p class="text-sm font-medium text-gray-600 mb-2">Ecuación diferencial:</p>
@@ -183,35 +190,29 @@ function displayDifferentialResult(data, type) {
                         <i class="fas fa-list-ol text-blue-500 mr-2"></i>
                         Procedimiento Analítico
                     </h5>
-                    
                     <div class="space-y-4">
                         <div class="bg-white rounded p-3 border border-blue-100">
                             <p class="text-sm font-medium text-blue-600 mb-1">1. Identificación del tipo de ecuación:</p>
                             <div class="math-tex bg-gray-50 p-2 rounded text-center">$$${data.equation_latex}$$</div>
                         </div>
-                        
                         <div class="bg-white rounded p-3 border border-blue-100">
                             <p class="text-sm font-medium text-blue-600 mb-1">2. Método de solución aplicado:</p>
                             <div class="math-tex bg-gray-50 p-2 rounded text-center">$$${getSolutionMethod(data.equation_latex)}$$</div>
                         </div>
-                        
                         <div class="bg-white rounded p-3 border border-blue-100">
                             <p class="text-sm font-medium text-blue-600 mb-1">3. Integración:</p>
                             <div class="math-tex bg-gray-50 p-2 rounded text-center">$$\\int \\frac{dy}{dx} dx = \\int f(x) dx$$</div>
                         </div>
-                        
                         <div class="bg-white rounded p-3 border border-blue-100">
                             <p class="text-sm font-medium text-blue-600 mb-1">4. Solución general:</p>
                             <div class="math-tex bg-gray-50 p-2 rounded text-center">$$y(x) = C \\cdot e^{\\int f(x) dx}$$</div>
                         </div>
-                        
                         <div class="bg-white rounded p-3 border border-blue-100">
                             <p class="text-sm font-medium text-blue-600 mb-1">5. Aplicación de condición inicial:</p>
                             <div class="math-tex bg-gray-50 p-2 rounded text-center">$$C = ${data.initial_y} \\cdot e^{-\\int_{x_0} f(x) dx}$$</div>
                         </div>
                     </div>
                 </div>
-                
                 <div class="bg-green-50 rounded-lg p-4 border border-green-200">
                     <h5 class="text-md font-semibold text-green-700 mb-3 flex items-center">
                         <i class="fas fa-check-circle text-green-500 mr-2"></i>
@@ -230,13 +231,11 @@ function displayDifferentialResult(data, type) {
                         <i class="fas fa-calculator text-purple-500 mr-2"></i>
                         Detalles del Método ${getDifferentialMethodName(data.method)}
                     </h5>
-                    
                     <div class="bg-white rounded-lg p-3 mb-4">
                         <div class="math-tex bg-gray-50 p-3 rounded-lg text-center">
                             ${getMethodFormula(data.method)}
                         </div>
                     </div>
-                    
                     <div class="bg-white rounded-lg p-3 border border-gray-200 overflow-auto max-h-80">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-100">
@@ -247,7 +246,7 @@ function displayDifferentialResult(data, type) {
                             </thead>
                             <tbody class="divide-y divide-gray-200 font-mono text-sm">
             `;
-            
+
             // Mostrar cada paso del método numérico
             if (data.method_details && data.method_details.length > 0) {
                 let currentStep = 0;
@@ -284,13 +283,12 @@ function displayDifferentialResult(data, type) {
                     }
                 });
             }
-            
+
             resultHTML += `
                             </tbody>
                         </table>
                     </div>
                 </div>
-                
                 <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
                     <h5 class="text-md font-semibold text-gray-700 p-3 bg-gray-100 border-b flex items-center">
                         <i class="fas fa-table text-gray-500 mr-2"></i>
@@ -310,8 +308,6 @@ function displayDifferentialResult(data, type) {
 
             // Mostrar tabla de resultados con valores intermedios si están disponibles
             data.solution.forEach((point, index) => {
-                const stepData = data.method_steps ? data.method_steps[index] : null;
-                
                 resultHTML += `
                     <tr class="hover:bg-blue-50 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}">
                         <td class="px-4 py-2 text-center text-sm">${index}</td>
@@ -326,7 +322,6 @@ function displayDifferentialResult(data, type) {
                         </table>
                     </div>
                 </div>
-                
                 <div class="bg-gray-50 rounded-lg p-3 border border-gray-200 text-sm text-gray-600">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
                         <div class="flex items-center">
@@ -350,7 +345,7 @@ function displayDifferentialResult(data, type) {
             `;
         }
 
-        resultHTML += `</div>`; // Cierre del contenedor principal
+        resultHTML += `</div>`;
         resultDiv.innerHTML = resultHTML;
 
         // Mostrar gráfica si está habilitado y hay datos
@@ -368,7 +363,10 @@ function displayDifferentialResult(data, type) {
     }
 }
 
-// Funciones auxiliares para mejorar la presentación
+// ===============================
+// Funciones auxiliares de presentación
+// ===============================
+
 function getMethodIcon(method) {
     const icons = {
         'analytical': 'fa-square-root-alt',
@@ -415,8 +413,7 @@ function getDifferentialMethodName(method) {
  */
 function renderDifferentialGraph(graphData) {
     const graphElement = document.getElementById("diff-eq-graph");
-    
-    // Datos mínimos para la gráfica
+
     const trace = {
         x: graphData.x_values,
         y: graphData.y_values,
@@ -430,7 +427,6 @@ function renderDifferentialGraph(graphData) {
         yaxis: { title: 'y(x)' }
     };
 
-    // Renderizar directamente SIN verificar nada más
     Plotly.newPlot(graphElement, [trace], layout)
         .then(() => {
             console.log("Gráfica renderizada con éxito!");
@@ -444,6 +440,10 @@ function renderDifferentialGraph(graphData) {
             console.error("Error Plotly:", err);
         });
 }
+
+// ===============================
+// Funciones auxiliares para input matemático auxiliar
+// ===============================
 
 /**
  * Inserta un símbolo matemático en el input auxiliar de cálculo
@@ -541,16 +541,16 @@ function updateCalcMathPreview() {
     }
 }
 
-// =============================================
-// Events Listeners
-// =============================================
+// ===============================
+// Event Listeners
+// ===============================
 
-// Event listeners para el selector de tipo de solución
+// Selector de tipo de solución
 document.querySelectorAll('input[name="solutionType"]').forEach(radio => {
     radio.addEventListener('change', showDifferentialOptions);
 });
 
-// Configurar event listeners para los botones de cálculo
+// Botones de operación de cálculo (para mostrar opciones)
 document.querySelectorAll('.operation-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         const operation = this.getAttribute('onclick').match(/'([^']+)'/)[1];

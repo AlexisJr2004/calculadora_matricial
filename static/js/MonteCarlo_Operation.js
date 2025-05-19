@@ -10,7 +10,7 @@ let monteCarloPlot = null;
 function addFunctionRow() {
     const table = document.getElementById("functions-table");
     const newRow = document.createElement("tr");
-    
+
     newRow.innerHTML = `
         <td class="py-2">
             <input type="text" class="input-field w-full" placeholder="Ej: Función" />
@@ -24,21 +24,21 @@ function addFunctionRow() {
             </button>
         </td>
     `;
-    
+
     table.appendChild(newRow);
 }
 
 function formatMathExpression(expr) {
-  // Reemplazos para mejor visualización
-  return expr
-    .replace(/\*\*/g, '^')  // x**2 → x^2
-    .replace(/Math\./g, '') // Math.sqrt → sqrt
-    .replace(/sqrt/g, '√')  // sqrt → √
-    .replace(/\*/g, '·')    // * → ·
-    .replace(/sin/g, 'sen') // sin → sen
-    .replace(/([a-z]+)\(/g, '$1(') // funciones en texto normal
-    .replace(/(\d)([a-z])/g, '$1·$2') // 2x → 2·x
-    .replace(/([a-z])(\d)/g, '$1·$2'); // x2 → x·2
+    // Reemplazos para mejor visualización
+    return expr
+        .replace(/\*\*/g, '^')  // x**2 → x^2
+        .replace(/Math\./g, '') // Math.sqrt → sqrt
+        .replace(/sqrt/g, '√')  // sqrt → √
+        .replace(/\*/g, '·')    // * → ·
+        .replace(/sin/g, 'sen') // sin → sen
+        .replace(/([a-z]+)\(/g, '$1(') // funciones en texto normal
+        .replace(/(\d)([a-z])/g, '$1·$2') // 2x → 2·x
+        .replace(/([a-z])(\d)/g, '$1·$2'); // x2 → x·2
 }
 
 /**
@@ -62,18 +62,18 @@ function showAlert(message, type = "info") {
         error: { bg: "bg-red-100", text: "text-red-800", icon: "fa-exclamation-circle" },
         success: { bg: "bg-green-100", text: "text-green-800", icon: "fa-check-circle" }
     };
-    
+
     const alertDiv = document.createElement("div");
     alertDiv.className = `p-3 mb-4 rounded-md ${colors[type].bg} ${colors[type].text} flex items-center`;
     alertDiv.innerHTML = `
         <i class="fas ${colors[type].icon} mr-2"></i>
         <span>${message}</span>
     `;
-    
+
     // Insertar antes del botón de ejecución
     const runButton = document.querySelector("#montecarlo-section button[onclick='runMonteCarloSimulation()']");
     runButton.parentNode.insertBefore(alertDiv, runButton);
-    
+
     // Auto-eliminar después de 5 segundos
     setTimeout(() => alertDiv.remove(), 5000);
 }
@@ -93,7 +93,7 @@ async function runMonteCarloSimulation() {
         if (rows.length < 2) {
             throw new Error("Debes ingresar al menos dos funciones");
         }
-        
+
         const f1 = rows[0].cells[1].querySelector("input").value;
         const f2 = rows[1].cells[1].querySelector("input").value;
         const f1Name = rows[0].cells[0].querySelector("input").value || "Función 1";
@@ -167,11 +167,11 @@ async function runMonteCarloSimulation() {
  */
 function renderMonteCarloResults(data, simulations, executionTime) {
     const resultsDiv = document.getElementById("montecarlo-results");
-    
+
     // Formatear las funciones para mostrar
     const f1Formatted = formatMathExpression(data.f1);
     const f2Formatted = formatMathExpression(data.f2);
-    
+
     // Mostrar tabla con las primeras 20 simulaciones
     let html = `
         <div class="overflow-x-auto">
@@ -188,7 +188,7 @@ function renderMonteCarloResults(data, simulations, executionTime) {
                 </thead>
                 <tbody>
     `;
-    
+
     const sampleSize = Math.min(20, data.table.length);
     for (let i = 0; i < sampleSize; i++) {
         const row = data.table[i];
@@ -205,16 +205,16 @@ function renderMonteCarloResults(data, simulations, executionTime) {
             </tr>
         `;
     }
-    
+
     // Resumen estadístico
     const areaRect = (data.b - data.a) * (data.y_max - data.y_min);
     const percentage = (data.inside_count / data.total * 100).toFixed(2);
-    
+
     html += `
                 </tbody>
             </table>
         </div>
-        
+
         <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="bg-blue-50 p-3 rounded-lg border border-blue-100">
                 <h4 class="font-semibold text-blue-800 text-sm mb-1">CÁLCULO DEL ÁREA</h4>
@@ -224,7 +224,7 @@ function renderMonteCarloResults(data, simulations, executionTime) {
                     = <span class="font-bold">${data.area_est.toFixed(6)}</span>
                 </p>
             </div>
-            
+
             <div class="bg-green-50 p-3 rounded-lg border border-green-100">
                 <h4 class="font-semibold text-green-800 text-sm mb-1">EFICIENCIA</h4>
                 <p class="text-xs text-green-600">
@@ -234,46 +234,73 @@ function renderMonteCarloResults(data, simulations, executionTime) {
                 </p>
             </div>
         </div>
-        
+
         <div class="mt-3 text-sm text-gray-500 text-center">
             Mostrando ${sampleSize} de ${simulations.toLocaleString()} simulaciones
         </div>
     `;
-    
+
     resultsDiv.innerHTML = html;
     document.getElementById("simulation-time").textContent = `Tiempo: ${executionTime}ms`;
 }
 
 /**
  * Renderiza el gráfico interactivo con Plotly
+ * (Ahora con evaluación segura de expresiones)
  */
 function renderMonteCarloPlot(data) {
     const xs = data.table.map(r => r.x);
     const ys = data.table.map(r => r.y_rnd);
     const inside = data.table.map(r => r.inside);
-    
+
     // Preparar datos para las curvas de las funciones
     const xCurve = [];
     const y1Curve = [];
     const y2Curve = [];
     const steps = 100;
-    
+
+    // Evaluación segura de expresiones matemáticas
+    function safeEval(expr, x) {
+        // Permitir solo funciones y operadores matemáticos básicos
+        let safeExpr = expr
+            .replace(/Math\./g, '')
+            .replace(/(\W|^)sin\(/g, '$1Math.sin(')
+            .replace(/(\W|^)cos\(/g, '$1Math.cos(')
+            .replace(/(\W|^)tan\(/g, '$1Math.tan(')
+            .replace(/(\W|^)sqrt\(/g, '$1Math.sqrt(')
+            .replace(/(\W|^)log\(/g, '$1Math.log(')
+            .replace(/(\W|^)exp\(/g, '$1Math.exp(')
+            .replace(/(\W|^)abs\(/g, '$1Math.abs(')
+            .replace(/(\W|^)pow\(/g, '$1Math.pow(')
+            .replace(/(\W|^)PI/g, '$1Math.PI')
+            .replace(/(\W|^)E/g, '$1Math.E');
+
+        // Solo permite caracteres seguros
+        if (!/^[0-9x\+\-\*\/\.\(\)\s\^MathsincoqrtapwblgexpabsPIE]+$/i.test(safeExpr)) {
+            throw new Error("Expresión no permitida");
+        }
+
+        // Reemplaza ^ por **
+        safeExpr = safeExpr.replace(/\^/g, '**');
+
+        // Evalúa en un contexto seguro
+        return Function('"use strict";let x=' + x + ';return ' + safeExpr + ';')();
+    }
+
     for (let i = 0; i <= steps; i++) {
         const x = data.a + (data.b - data.a) * i / steps;
         xCurve.push(x);
-        
-        // Evaluar las funciones (simplificado para el frontend)
+
         try {
-            const xVal = x;
-            y1Curve.push(eval(data.f1.replace(/Math\./g, '').replace(/x/g, xVal)));
-            y2Curve.push(eval(data.f2.replace(/Math\./g, '').replace(/x/g, xVal)));
+            y1Curve.push(safeEval(data.f1, x));
+            y2Curve.push(safeEval(data.f2, x));
         } catch (e) {
-            console.error("Error evaluando funciones:", e);
+            console.error("Expresión insegura o error evaluando funciones:", e);
             y1Curve.push(0);
             y2Curve.push(0);
         }
     }
-    
+
     // Crear trazas para Plotly
     const traceInside = {
         x: xs.filter((_, i) => inside[i]),
@@ -287,7 +314,7 @@ function renderMonteCarloPlot(data) {
         name: 'Puntos dentro',
         hoverinfo: 'x+y'
     };
-    
+
     const traceOutside = {
         x: xs.filter((_, i) => !inside[i]),
         y: ys.filter((_, i) => !inside[i]),
@@ -300,7 +327,7 @@ function renderMonteCarloPlot(data) {
         name: 'Puntos fuera',
         hoverinfo: 'x+y'
     };
-    
+
     const traceF1 = {
         x: xCurve,
         y: y1Curve,
@@ -309,7 +336,7 @@ function renderMonteCarloPlot(data) {
         name: 'Función 1',
         hoverinfo: 'x+y'
     };
-    
+
     const traceF2 = {
         x: xCurve,
         y: y2Curve,
@@ -318,7 +345,7 @@ function renderMonteCarloPlot(data) {
         name: 'Función 2',
         hoverinfo: 'x+y'
     };
-    
+
     const layout = {
         height: 420,
         margin: { t: 30, l: 50, r: 30, b: 50 },
@@ -336,7 +363,7 @@ function renderMonteCarloPlot(data) {
         },
         hovermode: 'closest'
     };
-    
+
     // Renderizar o actualizar el gráfico
     const plotDiv = document.getElementById('montecarlo-chart');
     if (monteCarloPlot) {
@@ -344,7 +371,7 @@ function renderMonteCarloPlot(data) {
     } else {
         monteCarloPlot = Plotly.newPlot(plotDiv, [traceOutside, traceInside, traceF1, traceF2], layout);
     }
-    
+
     // Configurar botones de zoom
     document.getElementById('zoom-in-btn').onclick = () => {
         Plotly.relayout(plotDiv, {
@@ -354,7 +381,7 @@ function renderMonteCarloPlot(data) {
             'yaxis.range[1]': layout.yaxis.range[1] * 0.9
         });
     };
-    
+
     document.getElementById('zoom-out-btn').onclick = () => {
         Plotly.relayout(plotDiv, {
             'xaxis.range[0]': layout.xaxis.range[0] * 1.1,
@@ -372,26 +399,26 @@ function updateStatistics(data) {
     // Formatear las funciones para mostrar
     const f1Formatted = formatMathExpression(data.f1);
     const f2Formatted = formatMathExpression(data.f2);
-    
+
     // Actualizar métricas principales
     document.getElementById('estimated-area').textContent = data.area_est.toFixed(6);
     document.getElementById('inside-points').textContent = `${data.inside_count}/${data.total}`;
-    
+
     // Calcular porcentaje
     const percentage = (data.inside_count / data.total * 100).toFixed(2);
     document.getElementById('percentage-inside').textContent = `${percentage}% de puntos dentro`;
-    
+
     // Mostrar cálculo del área
     const areaRect = (data.b - data.a) * (data.y_max - data.y_min);
-    document.getElementById('area-calculation').textContent = 
+    document.getElementById('area-calculation').textContent =
         `Área rectángulo: ${areaRect.toFixed(2)} × (${data.inside_count}/${data.total})`;
-    
+
     // Mostrar funciones formateadas
-    document.getElementById('function-1-display').innerHTML = 
+    document.getElementById('function-1-display').innerHTML =
         `<span class="font-mono">${f1Formatted}</span>`;
-    document.getElementById('function-2-display').innerHTML = 
+    document.getElementById('function-2-display').innerHTML =
         `<span class="font-mono">${f2Formatted}</span>`;
-    
+
     // Actualizar contador de puntos
     document.getElementById('points-count').textContent = `${data.total.toLocaleString()} puntos`;
 }
