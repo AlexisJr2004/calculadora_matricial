@@ -2740,11 +2740,6 @@
                       <p>Los resultados numéricos aparecerán aquí</p>
                     </div>
                   </div>
-                  <!-- Paso a paso del método -->
-                  <div
-                    id="diffeq-steps"
-                    class="bg-purple-50 p-4 rounded-md border border-purple-200 min-h-32 max-h-[400px] overflow-auto"
-                  ></div>
                 </div>
 
                 <!-- Columna Derecha: Gráfica -->
@@ -2755,14 +2750,17 @@
                       <span class="font-semibold text-lg text-gray-800">Gráfica de la Solución</span>
                     </div>
                     <div id="diffeq-plot" class="flex-1 flex items-center justify-center">
-                      <canvas id="diffeq-chart" class="w-full h-80"></canvas>
+                      <canvas id="diffeq-chart" class="min-h-32 max-h-90 overflow-auto mb-6"></canvas>
                     </div>
-                    <div class="text-xs text-gray-500 mt-2 text-center">
+                    <div class="text-xs text-gray-500 text-center">
                       Visualización de la evolución de las variables en el tiempo.
                     </div>
                   </div>
                 </div>
               </div>
+              <br>
+              <!-- Paso a paso del método -->
+              <div id="diffeq-steps" class="bg-purple-50 p-4 rounded-md border border-purple-200 min-h-32 max-h-[400px] overflow-auto"></div>
             </div>
           </div>
 
