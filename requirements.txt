@@ -1,4 +1,6 @@
-flask==3.0.3
-numpy==2.1.1
-sympy==1.13.3
-plotly==5.24.1
+flask==3.0.3           # Framework web principal
+numpy==2.1.1           # Cálculo numérico y matrices
+sympy==1.13.3          # Matemática simbólica (derivadas, integrales, etc)
+scipy==1.13.1          # Métodos numéricos y científicos
+plotly==5.24.1         # Gráficas interactivas
+requests==2.31.0       # Peticiones HTTP (si usas APIs externas)

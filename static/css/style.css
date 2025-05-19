@@ -243,3 +243,108 @@ body {
         3px 3px 6px rgba(0, 0, 0, 0.1),
         -3px -3px 6px rgba(255, 255, 255, 0.8);
 }
+
+
+/* Math Helper Styles */
+    .math-btn {
+        @apply py-2 rounded-md transition-all duration-200 text-sm font-medium;
+    }
+
+    .insert-btn {
+        @apply px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center justify-center;
+    }
+
+    #math-preview {
+        @apply transition-all duration-300;
+    }
+
+    /* Estilo para el cursor en la vista previa */
+    .math-cursor {
+        border-left: 2px solid #4f46e5;
+        animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+        from, to { border-color: transparent }
+        50% { border-color: #4f46e5 }
+    }
+
+
+    /* Añade esto a tu archivo CSS */
+.method-comparison {
+    border-left: 4px solid #6366F1;
+    background-color: #F5F3FF;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 0 6px 6px 0;
+}
+
+.method-comparison h4 {
+    color: #6366F1;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.method-comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.method-comparison-table th {
+    background-color: #EDE9FE;
+    padding: 8px;
+    text-align: left;
+    font-size: 0.85rem;
+}
+
+.method-comparison-table td {
+    padding: 8px;
+    border-bottom: 1px solid #EDE9FE;
+    font-size: 0.85rem;
+}
+
+.method-comparison-table tr:hover {
+    background-color: #F5F3FF;
+}
+
+.matrix-container {
+    display: inline-block;
+    margin: 10px 0;
+    overflow-x: auto;
+}
+
+.matrix {
+    border-collapse: collapse;
+    margin: 0 auto;
+}
+
+.matrix td {
+    border: 1px solid #d1d5db;
+    padding: 8px 12px;
+    text-align: center;
+    min-width: 40px;
+}
+
+.matrix-result {
+    border-collapse: collapse;
+}
+
+.matrix-result td {
+    border: 1px solid #e5e7eb;
+    padding: 8px 16px;
+    text-align: center;
+}
+
+.math-formula {
+    font-size: 1.1em;
+    color: #374151;
+}
+
+.procedure-step {
+    border-left: 3px solid #6366f1;
+    background-color: #f8fafc;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    border-radius: 0 4px 4px 0;
+}
