@@ -11,7 +11,7 @@
   <a href="https://drive.google.com/drive/folders/19wBxe_--0iD4wVQFVGS0qkgQbykX_vxg?usp=sharing" target="_blank">
     <img src="https://img.shields.io/badge/⬇️_Descargar_Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Descargar Instalador">
   </a>
-  <a href="https://drive.google.com/file/d/1Dik0z4n06v4k1JwpVIjHRIvkCqvnykUm/view?usp=sharing" target="_blank">
+  <a href="https://drive.google.com/file/d/13tIIIua3vpUJEQYyQjrXCW48Gb55ljN/view?usp=sharing" target="_blank">
     <img src="https://img.shields.io/badge/📘_Manual_de_Usuario-FF6D01?style=for-the-badge&logo=bookstack&logoColor=white" alt="Manual de Usuario">
   </a>
   <a href="https://github.com/AlexisJr2004/calculadora_matricial" target="_blank">
@@ -138,7 +138,7 @@ Luego abre tu navegador en:
 
 ## 📚 Documentación
 
-- [📘 Manual de Usuario (PDF)](https://drive.google.com/file/d/1Dik0z4n06v4k1JwpVIjHRIvkCqvnykUm/view?usp=sharing)
+- [📘 Manual de Usuario (PDF)](https://drive.google.com/file/d/13tIIIua3vpUJEQYyQjrXCW48Gb55ljN/view?usp=sharing)
 - [💻 Repositorio en GitHub](https://github.com/AlexisJr2004/calculadora_matricial)
 
 ---
