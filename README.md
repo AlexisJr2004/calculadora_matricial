@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://drive.google.com/drive/folders/19wBxe_--0iD4wVQFVGS0qkgQbykX_vxg?usp=sharing" target="_blank">
-    <img src="https://img.shields.io/badge/⬇️_Descargar_Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Descargar Instalador">
+    <img src="https://img.shields.io/badge/⬇️_Descargar_Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Descargar el Ejecutable">
   </a>
   <a href="https://drive.google.com/file/d/13tIII-ua3vpUJEQYyQjrXCW48Gb55ljN/view" target="_blank">
     <img src="https://img.shields.io/badge/📘_Manual_de_Usuario-FF6D01?style=for-the-badge&logo=bookstack&logoColor=white" alt="Manual de Usuario">
@@ -107,11 +107,11 @@
 
 ## ⚡ Instalación
 
-### 🔹 Opción 1: Instalador para Windows
+### 🔹 Opción 1: Aplicación para Windows
 
-Descarga el instalador auto-ejecutable:
+Descarga el ejecutable de SCIENCE CALC:
 
-[⬇️ Descargar Instalador Windows](https://drive.google.com/drive/folders/19wBxe_--0iD4wVQFVGS0qkgQbykX_vxg?usp=sharing)
+[⬇️ Descargar Ejecutable de Windows](https://drive.google.com/drive/folders/19wBxe_--0iD4wVQFVGS0qkgQbykX_vxg?usp=sharing)
 
 ### 🔹 Opción 2: Desde Código Fuente
 
