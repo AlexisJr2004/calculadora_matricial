@@ -74,7 +74,7 @@
 
 ---
 
-## 🆕 Novedades en la Versión 4.5
+## 🆕 Novedades en la Versión 4.5.0
 
 - **Simulador de Montecarlo**: Estima áreas entre funciones con visualización y estadísticas.
 - **Módulo de Ecuaciones Diferenciales**: Métodos Euler, Euler Mejorado, Runge-Kutta 4, Taylor.
@@ -83,6 +83,38 @@
 - **Interfaz renovada**: Navegación por pestañas, diseño responsive y moderno.
 - **Visualización avanzada**: Gráficas interactivas con Plotly y Chart.js.
 - **Soporte para expresiones matemáticas**: Sintaxis amigable y ayuda contextual.
+
+---
+
+## 🆕 Novedades en la Versión 3.5.0
+
+- **Cálculo simbólico**: Derivadas, integrales y límites automáticos.
+- **Gráficas 3D**: Visualización interactiva en tres dimensiones.
+- **Panel de ayuda contextual**: Asistencia integrada en la interfaz.
+
+---
+
+## 🆕 Novedades en la Versión 3.0.0
+
+- **Visualización de gráficas 2D**: Representación gráfica de funciones matemáticas.
+- **Matrices avanzadas**: Cálculo de inversa, rango y traza.
+- **Exportación de resultados**: Guardado de operaciones y resultados.
+
+---
+
+## 🆕 Novedades en la Versión 2.0.0
+
+- **Módulo de polinomios**: Operaciones algebraicas, derivación e integración.
+- **Funciones para vectores**: Producto punto y cálculo de magnitud.
+- **Mejoras visuales**: Interfaz más intuitiva y amigable.
+
+---
+
+## 🆕 Novedades en la Versión 1.0.0
+
+- **Operaciones básicas con matrices**: Suma, resta y multiplicación.
+- **Cálculo de determinante y transpuesta**: Funciones esenciales para álgebra lineal.
+- **Interfaz gráfica inicial**: Primer diseño funcional y sencillo.
 
 ---
 
