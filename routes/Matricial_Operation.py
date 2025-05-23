@@ -18,6 +18,49 @@ FORMULAS = {
     'rank': r'\text{rank}(A) = \dim(\text{col}(A)) = \dim(\text{row}(A))'
 }
 
+@matrix_bp.route('/matrix_operation', methods=['POST'])
+def matrix_operation():
+    data = request.json
+    operation = data['operation']
+    matrix_a = np.array(data['matrixA'], dtype=float)
+    matrix_b = np.array(data['matrixB'], dtype=float) if 'matrixB' in data else None
+    selected_matrix = data.get('selectedMatrix', 'A')
+
+    try:
+        # Validaciones básicas
+        if operation in ['add', 'subtract', 'multiply'] and matrix_b is None:
+            raise ValueError("Se requieren ambas matrices para esta operación")
+
+        if operation in ['add', 'subtract'] and matrix_a.shape != matrix_b.shape:
+            raise ValueError("Las matrices deben tener las mismas dimensiones para suma/resta")
+
+        if operation == 'multiply' and matrix_a.shape[1] != matrix_b.shape[0]:
+            raise ValueError(f"No coinciden las dimensiones para multiplicación: {matrix_a.shape} vs {matrix_b.shape}")
+
+        if operation in ['determinant', 'inverse', 'trace']:
+            if matrix_a.shape[0] != matrix_a.shape[1]:
+                raise ValueError("La matriz debe ser cuadrada para esta operación")
+
+        # Realizar operación
+        result, steps = matrix_operation_steps(
+            operation, matrix_a, matrix_b, selected_matrix
+        )
+
+        return jsonify({
+            'success': True,
+            'result': result,
+            'formula': FORMULAS.get(operation, ""),
+            'steps': steps,
+            'details': f"Operación {operation} completada en matriz {selected_matrix}"
+        })
+
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'details': f"Error en operación {operation} con matriz {selected_matrix}"
+        })
+    
 def format_matrix(matrix):
     """Formatea una matriz con bordes y alineación"""
     rows, cols = matrix.shape
@@ -137,45 +180,3 @@ def matrix_operation_steps(operation, matrix_a, matrix_b=None, selected_matrix='
         steps.append(f"<b>Rango de la matriz:</b> {rank}")
         return int(rank), steps
 
-@matrix_bp.route('/matrix_operation', methods=['POST'])
-def matrix_operation():
-    data = request.json
-    operation = data['operation']
-    matrix_a = np.array(data['matrixA'], dtype=float)
-    matrix_b = np.array(data['matrixB'], dtype=float) if 'matrixB' in data else None
-    selected_matrix = data.get('selectedMatrix', 'A')
-
-    try:
-        # Validaciones básicas
-        if operation in ['add', 'subtract', 'multiply'] and matrix_b is None:
-            raise ValueError("Se requieren ambas matrices para esta operación")
-
-        if operation in ['add', 'subtract'] and matrix_a.shape != matrix_b.shape:
-            raise ValueError("Las matrices deben tener las mismas dimensiones para suma/resta")
-
-        if operation == 'multiply' and matrix_a.shape[1] != matrix_b.shape[0]:
-            raise ValueError(f"No coinciden las dimensiones para multiplicación: {matrix_a.shape} vs {matrix_b.shape}")
-
-        if operation in ['determinant', 'inverse', 'trace']:
-            if matrix_a.shape[0] != matrix_a.shape[1]:
-                raise ValueError("La matriz debe ser cuadrada para esta operación")
-
-        # Realizar operación
-        result, steps = matrix_operation_steps(
-            operation, matrix_a, matrix_b, selected_matrix
-        )
-
-        return jsonify({
-            'success': True,
-            'result': result,
-            'formula': FORMULAS.get(operation, ""),
-            'steps': steps,
-            'details': f"Operación {operation} completada en matriz {selected_matrix}"
-        })
-
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e),
-            'details': f"Error en operación {operation} con matriz {selected_matrix}"
-        })

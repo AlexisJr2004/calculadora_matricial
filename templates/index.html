@@ -494,65 +494,74 @@
             <!-- Top Row: Configuration + Matrices -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
               <!-- Configuration Panel -->
-              <div
-                class="bg-white rounded-lg shadow-md border border-gray-100 p-5"
-              >
-                <h3
-                  class="font-semibold text-lg mb-4 text-gray-800 flex items-center"
-                >
-                  <i class="fas fa-cog text-indigo-500 mr-2"></i> Configuración
-                </h3>
+              <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-300">
+                <div class="flex items-center mb-5">
+                  <div class="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center mr-3">
+                    <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                  </div>
+                  <h3 class="font-semibold text-lg text-gray-800">Configuración</h3>
+                </div>
 
-                <div class="space-y-4">
+                <div class="space-y-5">
                   <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1"
-                      >Dimensiones</label
-                    >
-                    <div class="flex items-center space-x-3">
-                      <label class="block text-sm font-medium text-gray-700 mb-1"
-                        >Filas</label
-                      >
-                      <select id="matrix-rows" class="flex-1 input-field">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3" selected>3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                      </select>
-                      <label class="block text-sm font-medium text-gray-700 mb-1"
-                        >Columnas</label
-                      >
-                      <select id="matrix-cols" class="flex-1 input-field">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3" selected>3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                      </select>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Dimensiones de la matriz</label>
+                    <div class="grid grid-cols-2 gap-4">
+                      <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Filas</label>
+                        <select id="matrix-rows" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3" selected>3</option>
+                          <option value="4">4</option>
+                          <option value="5">5</option>
+                          <option value="6">6</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Columnas</label>
+                        <select id="matrix-cols" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3" selected>3</option>
+                          <option value="4">4</option>
+                          <option value="5">5</option>
+                          <option value="6">6</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
 
                   <button
                     onclick="updateMatrixSize()"
-                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md transition flex items-center justify-center"
+                    class="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white py-2.5 px-4 rounded-lg transition-all duration-300 flex items-center justify-center shadow-md hover:shadow-lg"
                   >
-                    <i class="fas fa-sync-alt mr-2"></i> Actualizar
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Actualizar dimensiones
                   </button>
 
-                  <div class="pt-3 space-y-2">
+                  <div class="pt-2 space-y-3">
                     <button
                       onclick="randomizeMatrix('A')"
-                      class="w-full bg-blue-100 hover:bg-blue-200 text-blue-600 py-1.5 px-3 rounded-md text-sm flex items-center justify-center"
+                      class="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 py-2 px-3 rounded-lg text-sm flex items-center justify-center transition-all border border-blue-100 hover:border-blue-200"
                     >
-                      <i class="fas fa-random mr-2"></i> Aleatorizar A
+                      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                      </svg>
+                      Aleatorizar Matriz A
                     </button>
                     <button
                       onclick="randomizeMatrix('B')"
-                      class="w-full bg-green-100 hover:bg-green-200 text-green-600 py-1.5 px-3 rounded-md text-sm flex items-center justify-center"
+                      class="w-full bg-green-50 hover:bg-green-100 text-green-700 py-2 px-3 rounded-lg text-sm flex items-center justify-center transition-all border border-green-100 hover:border-green-200"
                     >
-                      <i class="fas fa-random mr-2"></i> Aleatorizar B
+                      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                      </svg>
+                      Aleatorizar Matriz B
                     </button>
                   </div>
                 </div>
@@ -561,54 +570,56 @@
               <!-- Matrices Panel -->
               <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Matriz A -->
-                <div
-                  class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow"
-                >
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-300 group">
                   <div class="flex justify-between items-center mb-4">
                     <h3 class="font-medium text-gray-800 flex items-center">
-                      <div
-                        class="w-8 h-8 rounded-md bg-blue-100 flex items-center justify-center mr-2"
-                      >
-                        <i class="fas fa-table text-blue-500 text-sm"></i>
+                      <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center mr-3 group-hover:bg-blue-100 transition-all">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                        </svg>
                       </div>
-                      <span>Matriz A</span>
+                      <span class="font-semibold">Matriz A</span>
                     </h3>
                     <button
                       onclick="clearMatrix('A')"
-                      class="rounded-full clear-btn bg-blue-100 hover:bg-blue-200"
+                      class="rounded-lg clear-btn bg-blue-50 hover:bg-blue-100 text-blue-600 p-2 transition-all"
+                      title="Limpiar matriz"
                     >
-                      <i class="m-2 fas fa-eraser text-blue-500 text-sm"></i>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                      </svg>
                     </button>
                   </div>
                   <div
                     id="matrixA"
-                    class="matrix-grid grid gap-3 p-2 bg-gray-50/50 rounded-lg"
+                    class="matrix-grid grid gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200"
                   ></div>
                 </div>
 
                 <!-- Matriz B -->
-                <div
-                  class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow"
-                >
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-300 group">
                   <div class="flex justify-between items-center mb-4">
                     <h3 class="font-medium text-gray-800 flex items-center">
-                      <div
-                        class="w-8 h-8 rounded-md bg-green-100 flex items-center justify-center mr-2"
-                      >
-                        <i class="fas fa-table text-green-500 text-sm"></i>
+                      <div class="w-9 h-9 rounded-lg bg-green-50 flex items-center justify-center mr-3 group-hover:bg-green-100 transition-all">
+                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                        </svg>
                       </div>
-                      <span>Matriz B</span>
+                      <span class="font-semibold">Matriz B</span>
                     </h3>
                     <button
                       onclick="clearMatrix('B')"
-                      class="rounded-full clear-btn bg-green-100 hover:bg-green-200"
+                      class="rounded-lg clear-btn bg-green-50 hover:bg-green-100 text-green-600 p-2 transition-all"
+                      title="Limpiar matriz"
                     >
-                      <i class="m-2 fas fa-eraser text-green-500 text-sm"></i>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                      </svg>
                     </button>
                   </div>
                   <div
                     id="matrixB"
-                    class="matrix-grid grid gap-3 p-2 bg-gray-50/50 rounded-lg"
+                    class="matrix-grid grid gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200"
                   ></div>
                 </div>
               </div>
@@ -2701,7 +2712,6 @@
                 <div id="diffeq-inputs" class="space-y-4">
                   <!-- Dynamic inputs will be inserted here -->
                 </div>
-
                 <h3 class="font-semibold text-lg mt-6 mb-4 text-gray-800 flex items-center">
                   <i class="fas fa-list-ol text-purple-500 mr-2"></i> Condiciones Iniciales
                 </h3>

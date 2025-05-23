@@ -31,11 +31,27 @@ function createMatrixInputs(containerId) {
     container.style.gridTemplateColumns = `repeat(${matrixCols}, 1fr)`;
     for (let i = 0; i < matrixRows * matrixCols; i++) {
         const input = document.createElement("input");
-        input.type = "number";
+        input.type = "text";
         input.className = "matrix-input";
         input.placeholder = "0";
         container.appendChild(input);
     }
+}
+
+/**
+ * Convierte una cadena a número, soportando fracciones tipo "3/4"
+ */
+function parseFractionOrDecimal(str) {
+    str = str.trim().replace(',', '.');
+    if (/^\s*-?\d+(\.\d+)?\s*$/.test(str)) {
+        return parseFloat(str);
+    }
+    if (/^\s*-?\d+\s*\/\s*-?\d+\s*$/.test(str)) {
+        const [num, den] = str.split('/').map(s => parseFloat(s));
+        if (den === 0) return NaN;
+        return num / den;
+    }
+    return NaN;
 }
 
 /**
@@ -66,7 +82,7 @@ function getMatrixValues(matrixId) {
         const row = [];
         for (let j = 0; j < matrixCols; j++) {
             const index = i * matrixCols + j;
-            const value = parseFloat(inputs[index].value) || 0;
+            const value = parseFractionOrDecimal(inputs[index].value) || 0;
             row.push(value);
         }
         matrix.push(row);

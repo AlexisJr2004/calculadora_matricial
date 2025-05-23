@@ -10,14 +10,7 @@ function clearPolynomial(fieldId) {
     updatePolynomialPreview(fieldId);
 }
 
-/**
- * Sanitiza la entrada de polinomio para evitar code injection
- * Solo permite números, x, +, -, *, ^, paréntesis y espacios
- */
-function sanitizePolynomialInput(input) {
-    // Elimina cualquier caracter no permitido
-    return input.replace(/[^0-9xX\+\-\*\^\(\)\.\s]/g, '');
-}
+
 
 /**
  * Realiza una operación con polinomios
@@ -29,8 +22,8 @@ async function polynomialOperation(operation) {
         let selectedPoly = document.querySelector('input[name="selectedPolynomial"]:checked').value;
 
         // Sanitizar entradas antes de enviar al backend
-        const poly1 = sanitizePolynomialInput(document.getElementById("poly1").value);
-        const poly2 = sanitizePolynomialInput(document.getElementById("poly2").value);
+        const poly1 = document.getElementById("poly1").value;
+        const poly2 = document.getElementById("poly2").value;
 
         let requestData = {
             operation: operation,
