@@ -2108,34 +2108,52 @@
           <div id="differential-section" class="hidden fade-in py-8">
             <!-- Header Section -->
             <div class="mb-8">
-              <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 mb-3">
-                <span class="animate-pulse mr-2">•</span>Ecuaciones diferenciales
+              <div
+                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 mb-3"
+              >
+                <span class="animate-pulse mr-2">•</span>Ecuaciones
+                diferenciales
               </div>
               <h2 class="text-3xl font-bold mb-3 text-gray-800">
-                Solución de <span class="text-indigo-600">Ecuaciones Diferenciales</span>
+                Solución de
+                <span class="text-indigo-600">Ecuaciones Diferenciales</span>
               </h2>
               <p class="text-gray-600">
-                Resuelve ecuaciones diferenciales ordinarias de primer y segundo orden
+                Resuelve ecuaciones diferenciales ordinarias de primer y segundo
+                orden
               </p>
             </div>
 
+            <!-- Main Content Area -->
             <div class="flex flex-col lg:flex-row gap-6">
-              <!-- Left Column -->
+              <!-- Left Column - Differential Equations Operations -->
               <div class="flex-1">
                 <!-- Differential Equation Input -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow mb-6">
+                <div
+                  class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow mb-6"
+                >
                   <div class="flex justify-between items-center mb-4">
                     <h3 class="font-medium text-gray-800 flex items-center">
-                      <div class="w-8 h-8 rounded-md bg-cyan-100 flex items-center justify-center mr-2">
+                      <div
+                        class="w-8 h-8 rounded-md bg-cyan-100 flex items-center justify-center mr-2"
+                      >
                         <i class="fas fa-infinity text-cyan-500 text-sm"></i>
                       </div>
                       <span>Ecuación Diferencial</span>
                     </h3>
-                    <button onclick="clearDifferentialInputs()" class="rounded-full clear-btn bg-cyan-100 hover:bg-cyan-200">
+                    <button
+                      onclick="clearDifferentialInputs()"
+                      class="rounded-full clear-btn bg-cyan-100 hover:bg-cyan-200"
+                    >
                       <i class="p-2 fas fa-eraser text-cyan-500 text-sm"></i>
                     </button>
                   </div>
-                  <input type="text" id="diff-eq" class="input-field w-full" placeholder="Ej: y' = x + y, y'' + y = 0" />
+                  <input
+                    type="text"
+                    id="diff-eq"
+                    class="input-field w-full"
+                    placeholder="Ej: y' = x + y, y'' + y = 0"
+                  />
                   <p class="text-xs text-gray-500 mt-1">
                     Usa y' para primera derivada, y'' para segunda derivada
                   </p>
@@ -2143,40 +2161,87 @@
 
                 <!-- Initial Conditions -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                    <h3 class="font-medium text-gray-800 mb-3 flex items-center">
-                      <i class="fas fa-arrow-right-to-bracket text-blue-500 mr-2"></i>
+                  <!-- Initial Value -->
+                  <div
+                    class="bg-white rounded-xl shadow-sm border border-gray-100 p-5"
+                  >
+                    <h3
+                      class="font-medium text-gray-800 mb-3 flex items-center"
+                    >
+                      <i
+                        class="fas fa-arrow-right-to-bracket text-blue-500 mr-2"
+                      ></i>
                       Valor Inicial (x₀)
                     </h3>
-                    <input type="text" id="initial-x" class="input-field w-full" placeholder="Ej: 0" />
+                    <input
+                      type="text"
+                      id="initial-x"
+                      class="input-field w-full"
+                      placeholder="Ej: 0"
+                    />
                   </div>
-                  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                    <h3 class="font-medium text-gray-800 mb-3 flex items-center">
+
+                  <!-- Initial Condition -->
+                  <div
+                    class="bg-white rounded-xl shadow-sm border border-gray-100 p-5"
+                  >
+                    <h3
+                      class="font-medium text-gray-800 mb-3 flex items-center"
+                    >
                       <i class="fas fa-equals text-green-500 mr-2"></i>
                       Condición Inicial (y₀)
                     </h3>
-                    <input type="text" id="initial-y" class="input-field w-full" placeholder="Ej: 1" />
+                    <input
+                      type="text"
+                      id="initial-y"
+                      class="input-field w-full"
+                      placeholder="Ej: 1"
+                    />
                   </div>
                 </div>
 
                 <!-- Numerical Method Options -->
-                <div id="numerical-options-container" class="hidden bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-6">
+                <div
+                  id="numerical-options-container"
+                  class="hidden bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-6"
+                >
                   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <h3 class="font-medium text-gray-800 mb-2 flex items-center">
-                        <i class="fas fa-ruler text-orange-500 mr-2"></i> Paso (h)
+                      <h3
+                        class="font-medium text-gray-800 mb-2 flex items-center"
+                      >
+                        <i class="fas fa-ruler text-orange-500 mr-2"></i> Paso
+                        (h)
                       </h3>
-                      <input type="text" id="step-size" class="input-field w-full" placeholder="Ej: 0.1" />
+                      <input
+                        type="text"
+                        id="step-size"
+                        class="input-field w-full"
+                        placeholder="Ej: 0.1"
+                      />
                     </div>
                     <div>
-                      <h3 class="font-medium text-gray-800 mb-2 flex items-center">
-                        <i class="fas fa-arrow-right-long text-purple-500 mr-2"></i>
+                      <h3
+                        class="font-medium text-gray-800 mb-2 flex items-center"
+                      >
+                        <i
+                          class="fas fa-arrow-right-long text-purple-500 mr-2"
+                        ></i>
                         Puntos
                       </h3>
-                      <input type="number" id="num-points" class="input-field w-full" placeholder="Ej: 10" min="2" max="100" />
+                      <input
+                        type="number"
+                        id="num-points"
+                        class="input-field w-full"
+                        placeholder="Ej: 10"
+                        min="2"
+                        max="100"
+                      />
                     </div>
                     <div>
-                      <h3 class="font-medium text-gray-800 mb-2 flex items-center">
+                      <h3
+                        class="font-medium text-gray-800 mb-2 flex items-center"
+                      >
                         <i class="fas fa-chart-line text-red-500 mr-2"></i>
                         Mostrar Gráfica
                       </h3>
@@ -2189,23 +2254,48 @@
                 </div>
 
                 <!-- Solution Type Selector -->
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 p-4 bg-indigo-50 rounded-lg border border-indigo-100">
+                <div
+                  class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 p-4 bg-indigo-50 rounded-lg border border-indigo-100"
+                >
                   <div class="flex items-center">
                     <i class="fas fa-gears text-indigo-500 mr-2"></i>
-                    <span class="text-sm font-medium text-indigo-800">Tipo de Solución:</span>
+                    <span class="text-sm font-medium text-indigo-800"
+                      >Tipo de Solución:</span
+                    >
                   </div>
                   <div class="flex items-center space-x-2">
+                    <!-- Analytical Solution -->
                     <label class="inline-flex items-center cursor-pointer">
-                      <input type="radio" name="solutionType" value="analytical" checked class="hidden peer" />
-                      <div class="px-4 py-2 rounded-lg border-2 peer-checked:border-blue-500 peer-checked:bg-blue-50 peer-checked:text-blue-700 border-gray-200 bg-white text-gray-700 hover:bg-blue-100 hover:border-blue-300 transition-all duration-200 flex items-center">
-                        <div class="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>
+                      <input
+                        type="radio"
+                        name="solutionType"
+                        value="analytical"
+                        checked
+                        class="hidden peer"
+                      />
+                      <div
+                        class="px-4 py-2 rounded-lg border-2 peer-checked:border-blue-500 peer-checked:bg-blue-50 peer-checked:text-blue-700 border-gray-200 bg-white text-gray-700 hover:bg-blue-100 hover:border-blue-300 transition-all duration-200 flex items-center"
+                      >
+                        <div
+                          class="w-3 h-3 rounded-full bg-blue-500 mr-2"
+                        ></div>
                         <span>Analítica</span>
                       </div>
                     </label>
+                    <!-- Numerical Solution -->
                     <label class="inline-flex items-center cursor-pointer">
-                      <input type="radio" name="solutionType" value="numerical" class="hidden peer" />
-                      <div class="px-4 py-2 rounded-lg border-2 peer-checked:border-green-500 peer-checked:bg-green-50 peer-checked:text-green-700 border-gray-200 bg-white text-gray-700 hover:bg-green-100 hover:border-green-300 transition-all duration-200 flex items-center">
-                        <div class="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+                      <input
+                        type="radio"
+                        name="solutionType"
+                        value="numerical"
+                        class="hidden peer"
+                      />
+                      <div
+                        class="px-4 py-2 rounded-lg border-2 peer-checked:border-green-500 peer-checked:bg-green-50 peer-checked:text-green-700 border-gray-200 bg-white text-gray-700 hover:bg-green-100 hover:border-green-300 transition-all duration-200 flex items-center"
+                      >
+                        <div
+                          class="w-3 h-3 rounded-full bg-green-500 mr-2"
+                        ></div>
                         <span>Numérica</span>
                       </div>
                     </label>
@@ -2213,22 +2303,38 @@
                 </div>
 
                 <!-- Numerical Method Selector -->
-                <div id="method-selector-container" class="hidden bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-6">
+                <div
+                  id="method-selector-container"
+                  class="hidden bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-6"
+                >
                   <h3 class="font-medium text-gray-800 mb-3 flex items-center">
                     <i class="fas fa-calculator text-purple-500 mr-2"></i>
                     Método Numérico
                   </h3>
                   <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                    <button onclick="solveDifferentialEquation('euler')" class="method-btn px-3 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg">
+                    <button
+                      onclick="solveDifferentialEquation('euler')"
+                      class="method-btn px-3 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg"
+                    >
                       <i class="fas fa-arrow-down-short-wide mr-1"></i> Euler
                     </button>
-                    <button onclick="solveDifferentialEquation('improved_euler')" class="method-btn px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg">
-                      <i class="fas fa-arrow-up-right-dots mr-1"></i> Euler Mejorado
+                    <button
+                      onclick="solveDifferentialEquation('improved_euler')"
+                      class="method-btn px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg"
+                    >
+                      <i class="fas fa-arrow-up-right-dots mr-1"></i> Euler
+                      Mejorado
                     </button>
-                    <button onclick="solveDifferentialEquation('runge_kutta')" class="method-btn px-3 py-2 bg-gradient-to-r from-purple-500 to-violet-500 text-white rounded-lg">
+                    <button
+                      onclick="solveDifferentialEquation('runge_kutta')"
+                      class="method-btn px-3 py-2 bg-gradient-to-r from-purple-500 to-violet-500 text-white rounded-lg"
+                    >
                       <i class="fas fa-arrows-rotate mr-1"></i> Runge-Kutta
                     </button>
-                    <button onclick="solveDifferentialEquation('taylor')" class="method-btn px-3 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg">
+                    <button
+                      onclick="solveDifferentialEquation('taylor')"
+                      class="method-btn px-3 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg"
+                    >
                       <i class="fas fa-superscript mr-1"></i> Taylor
                     </button>
                   </div>
@@ -2236,20 +2342,33 @@
 
                 <!-- Solve Button for Analytical Solutions -->
                 <div id="analytical-solve-container" class="mb-6">
-                  <button onclick="solveDifferentialEquation('analytical')" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-4 rounded-lg transition flex items-center justify-center">
-                    <i class="fas fa-calculator mr-2"></i> Resolver Analíticamente
+                  <button
+                    onclick="solveDifferentialEquation('analytical')"
+                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-4 rounded-lg transition flex items-center justify-center"
+                  >
+                    <i class="fas fa-calculator mr-2"></i> Resolver
+                    Analíticamente
                   </button>
                 </div>
 
-                <!-- Result -->
-                <div class="bg-white rounded-lg shadow-md border border-gray-100 p-5">
+                <!-- Resul -->
+                <div
+                  class="bg-white rounded-lg shadow-md border border-gray-100 p-5"
+                >
                   <div class="flex justify-between items-center mb-3">
-                    <h3 class="font-semibold text-lg text-gray-800 flex items-center">
-                      <i class="fas fa-square-root-alt text-indigo-500 mr-2"></i>
+                    <h3
+                      class="font-semibold text-lg text-gray-800 flex items-center"
+                    >
+                      <i
+                        class="fas fa-square-root-alt text-indigo-500 mr-2"
+                      ></i>
                       Resultado
                     </h3>
                   </div>
-                  <div id="differential-result" class="bg-gray-50 p-4 rounded-md border border-gray-200 min-h-50 max-h-100 overflow-auto">
+                  <div
+                    id="differential-result"
+                    class="bg-gray-50 p-4 rounded-md border border-gray-200 min-h-50 max-h-100 overflow-auto"
+                  >
                     <div class="text-center py-8 text-gray-500">
                       <i class="fas fa-infinity text-3xl mb-2"></i>
                       <p>Los resultados aparecerán aquí</p>
@@ -2258,14 +2377,98 @@
                 </div>
 
                 <!-- Graph Container -->
-                <div id="graph-container" class="mt-6 bg-white rounded-lg shadow-md border border-gray-100 p-5 hidden">
+                <div
+                  id="graph-container"
+                  class="mt-6 bg-white rounded-lg shadow-md border border-gray-100 p-5"
+                >
                   <div class="flex justify-between items-center mb-3">
-                    <h3 class="font-semibold text-lg text-gray-800 flex items-center">
+                    <h3
+                      class="font-semibold text-lg text-gray-800 flex items-center"
+                    >
                       <i class="fas fa-chart-line text-indigo-500 mr-2"></i>
                       Gráfica de la Solución
                     </h3>
                   </div>
-                  <div id="diff-eq-graph" class="h-80 w-full bg-gray-50 rounded-md border border-gray-200"></div>
+                  <div
+                    id="diff-eq-graph"
+                    class="h-80 w-full bg-gray-50 rounded-md border border-gray-200"
+                  ></div>
+                </div>
+              </div>
+
+              <!-- Right Column - Differential Equations Calculator -->
+              <div class="w-full lg:w-96">
+                <div
+                  class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 sticky top-4"
+                >
+                  <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-medium text-gray-800 flex items-center">
+                      <div
+                        class="w-8 h-8 rounded-md bg-purple-100 flex items-center justify-center mr-2"
+                      >
+                        <i class="fas fa-info text-purple-500 text-sm"></i>
+                      </div>
+                      <span>Notación para ecuaciones diferenciales</span>
+                    </h3>
+                  </div>
+
+                  <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 text-sm">
+                      <thead class="bg-gray-50">
+                        <tr>
+                          <th
+                            class="px-4 py-2 text-left font-medium text-gray-700"
+                          >
+                            Símbolo
+                          </th>
+                          <th
+                            class="px-4 py-2 text-left font-medium text-gray-700"
+                          >
+                            Significado
+                          </th>
+                          <th
+                            class="px-4 py-2 text-left font-medium text-gray-700"
+                          >
+                            Ejemplo
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-gray-200">
+                        <tr>
+                          <td class="px-4 py-2 font-mono">y'</td>
+                          <td class="px-4 py-2">Primera derivada (dy/dx)</td>
+                          <td class="px-4 py-2 font-mono">y' = x + y</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                          <td class="px-4 py-2 font-mono">y''</td>
+                          <td class="px-4 py-2">Segunda derivada (d²y/dx²)</td>
+                          <td class="px-4 py-2 font-mono">y'' + y = 0</td>
+                        </tr>
+                        <tr>
+                          <td class="px-4 py-2 font-mono">exp(x)</td>
+                          <td class="px-4 py-2">Función exponencial (eˣ)</td>
+                          <td class="px-4 py-2 font-mono">y' = exp(x)</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                          <td class="px-4 py-2 font-mono">
+                            sin(x), cos(x), tan(x)
+                          </td>
+                          <td class="px-4 py-2">Funciones trigonométricas</td>
+                          <td class="px-4 py-2 font-mono">y'' + sin(y) = 0</td>
+                        </tr>
+                        <tr>
+                          <td class="px-4 py-2 font-mono">^</td>
+                          <td class="px-4 py-2">Exponenciación</td>
+                          <td class="px-4 py-2 font-mono">y' = x^2</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                          <td class="px-4 py-2 font-mono">sqrt(x)</td>
+                          <td class="px-4 py-2">Raíz cuadrada</td>
+                          <td class="px-4 py-2 font-mono">y' = sqrt(x)</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>

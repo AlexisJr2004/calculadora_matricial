@@ -451,6 +451,9 @@ document.querySelectorAll('input[name="solutionType"]').forEach(radio => {
 });
 
 // Botones de operación de cálculo (para mostrar opciones)
-document.querySelectorAll('input[name="solutionType"]').forEach(radio => {
-    radio.addEventListener('change', showDifferentialOptions);
+document.querySelectorAll('.operation-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const operation = this.getAttribute('onclick').match(/'([^']+)'/)[1];
+        showCalculusOptions(operation);
+    });
 });
