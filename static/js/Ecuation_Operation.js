@@ -442,106 +442,6 @@ function renderDifferentialGraph(graphData) {
 }
 
 // ===============================
-// Funciones auxiliares para input matemático auxiliar
-// ===============================
-
-/**
- * Inserta un símbolo matemático en el input auxiliar de cálculo
- */
-function insertCalcMathSymbol(symbol, backSteps = 0) {
-    const input = document.getElementById("calc-math-input");
-    if (!input) return;
-    const start = input.selectionStart;
-    const end = input.selectionEnd;
-    let insertText = symbol;
-
-    // Si es función tipo sqrt(), sin(), etc., coloca el cursor dentro de los paréntesis
-    if (symbol.endsWith('()')) {
-        insertText = symbol.slice(0, -1) + ')';
-    }
-
-    // Inserta el texto en la posición actual del cursor
-    input.value = input.value.slice(0, start) + insertText + input.value.slice(end);
-
-    // Calcula la nueva posición del cursor
-    let newPos = start + insertText.length;
-    if (backSteps > 0) {
-        newPos -= backSteps;
-    }
-
-    // Actualiza el cursor
-    input.setSelectionRange(newPos, newPos);
-    input.focus();
-
-    updateCalcMathPreview();
-}
-
-/**
- * Inserta la expresión actual en el input principal de función de cálculo
- */
-function insertIntoCalcFunction() {
-    const input = document.getElementById("calc-math-input");
-    const currentMathInput = input.value;
-    if (!currentMathInput) return;
-
-    const funcInput = document.getElementById("calculus-function");
-    const pos = funcInput.selectionStart || funcInput.value.length;
-
-    funcInput.value = funcInput.value.slice(0, pos) + currentMathInput + funcInput.value.slice(pos);
-    funcInput.focus();
-
-    // Disparar evento de cambio para posibles listeners
-    funcInput.dispatchEvent(new Event('input'));
-}
-
-/**
- * Limpia el input matemático auxiliar de cálculo
- */
-function clearCalcMathInput() {
-    const input = document.getElementById("calc-math-input");
-    if (input) input.value = "";
-    updateCalcMathPreview();
-}
-
-/**
- * Actualiza la vista previa matemática para la calculadora de cálculo
- */
-function updateCalcMathPreview() {
-    const input = document.getElementById("calc-math-input");
-    const preview = document.getElementById("calc-math-preview");
-    const currentMathInput = input.value;
-
-    if (!currentMathInput) {
-        preview.innerHTML = "Ingresa una expresión matemática";
-        return;
-    }
-
-    // Reemplazos para visualización en LaTeX
-    let displayText = currentMathInput
-        .replace(/\*\*/g, '^')
-        .replace(/sqrt/g, '\\sqrt')
-        .replace(/exp/g, 'e^{')
-        .replace(/pi/g, '\\pi')
-        .replace(/sin/g, '\\sin')
-        .replace(/cos/g, '\\cos')
-        .replace(/tan/g, '\\tan')
-        .replace(/log/g, '\\log')
-        .replace(/ln/g, '\\ln');
-
-    // Ajuste para cerrar llaves de exp si es necesario
-    if (/e\^{[^}]*$/.test(displayText)) {
-        displayText += '}';
-    }
-
-    preview.innerHTML = `$$${displayText}$$`;
-
-    // Renderizar LaTeX con MathJax
-    if (typeof MathJax !== 'undefined') {
-        MathJax.typesetPromise([preview]);
-    }
-}
-
-// ===============================
 // Event Listeners
 // ===============================
 
@@ -551,9 +451,6 @@ document.querySelectorAll('input[name="solutionType"]').forEach(radio => {
 });
 
 // Botones de operación de cálculo (para mostrar opciones)
-document.querySelectorAll('.operation-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const operation = this.getAttribute('onclick').match(/'([^']+)'/)[1];
-        showCalculusOptions(operation);
-    });
+document.querySelectorAll('input[name="solutionType"]').forEach(radio => {
+    radio.addEventListener('change', showDifferentialOptions);
 });
